@@ -26,7 +26,8 @@ export interface Config {
   theme: 'dark' | 'light';
   telemetry: boolean;
   // Set to "anthropic" to use the /anthropic-prefixed endpoint.
-  apiFlavor: 'openai' | 'anthropic';
+  // "deepseek-web" routes through a local proxy backed by a DeepSeek web session cookie.
+  apiFlavor: 'openai' | 'anthropic' | 'deepseek-web';
   permissionMode: PermissionMode;
   reasoningEffort: ReasoningEffort;
 }

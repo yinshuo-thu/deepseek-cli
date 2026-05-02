@@ -16,6 +16,7 @@ import { runAgentLoop } from './agents/loop.js';
 import { dispatch as dispatchSlash, commandNames } from './commands/index.js';
 import { Session, loadSession } from './session/history.js';
 import { saveConfig, type Config, type ModelId, type PermissionMode, type ReasoningEffort, CONFIG_FILE } from './config/index.js';
+import { loginFlow, logoutFlow, stopActiveProxy, whoamiFlow } from './commands/login.js';
 
 const SYSTEM_PROMPT = `You are DeepSeek-CLI, a terminal-native coding agent powered by the DeepSeek V4 model family.
 
@@ -84,13 +85,25 @@ export function App({ config: initialConfig, version }: Props) {
     if (key.tab && !key.shift && input === '' && !busy) {
       const order: PermissionMode[] = ['plan', 'agent', 'yolo'];
       const next = order[(order.indexOf(config.permissionMode) + 1) % order.length]!;
-      saveConfig({ permissionMode: next }).then(setConfig);
+      saveConfig({ permissionMode: next })
+        .then(setConfig)
+        .catch((err) => pushMsg({
+          id: `err-${Date.now()}`,
+          role: 'system',
+          content: `error: failed to save config — ${err instanceof Error ? err.message : String(err)}`,
+        }));
       return;
     }
     if (key.tab && key.shift && input === '' && !busy) {
       const order: ReasoningEffort[] = ['off', 'high', 'max'];
       const next = order[(order.indexOf(config.reasoningEffort) + 1) % order.length]!;
-      saveConfig({ reasoningEffort: next }).then(setConfig);
+      saveConfig({ reasoningEffort: next })
+        .then(setConfig)
+        .catch((err) => pushMsg({
+          id: `err-${Date.now()}`,
+          role: 'system',
+          content: `error: failed to save config — ${err instanceof Error ? err.message : String(err)}`,
+        }));
       return;
     }
   }, { isActive: !pendingPerm && !pickingSession });
@@ -158,7 +171,9 @@ export function App({ config: initialConfig, version }: Props) {
           }
           case 'open-config': {
             const editor = process.env.EDITOR || 'vi';
-            spawn(editor, [CONFIG_FILE], { stdio: 'inherit' });
+            await new Promise<void>((resolve) => {
+              spawn(editor, [CONFIG_FILE], { stdio: 'inherit' }).on('exit', () => resolve());
+            });
             return;
           }
           case 'show-cost': {
@@ -175,6 +190,84 @@ export function App({ config: initialConfig, version }: Props) {
           case 'compact':
             pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: '/compact is coming in M3.' });
             return;
+          case 'auth-login': {
+            // Fire-and-forget: server start is fast, but the browser
+            // round-trip can take minutes. We surface progress via system
+            // messages and never block the input box.
+            (async () => {
+              try {
+                const result = await loginFlow({
+                  onUrl: (url) => {
+                    pushMsg({
+                      id: `sys-${Date.now()}`,
+                      role: 'system',
+                      content: `auth server listening at ${url} — opening browser…`,
+                    });
+                  },
+                });
+                if (result.ok && result.proxyUrl) {
+                  try {
+                    const next = await saveConfig({
+                      apiFlavor: 'deepseek-web',
+                      baseUrl: result.proxyUrl,
+                    });
+                    setConfig(next);
+                    clientRef.current = new DeepSeekClient(next);
+                  } catch (err) {
+                    const msg = err instanceof Error ? err.message : String(err);
+                    pushMsg({
+                      id: `err-${Date.now()}`,
+                      role: 'system',
+                      content: `error: failed to persist proxy config — ${msg}`,
+                    });
+                  }
+                }
+                pushMsg({
+                  id: `sys-${Date.now()}`,
+                  role: 'system',
+                  content: result.ok ? result.message : `error: ${result.message}`,
+                });
+              } catch (err) {
+                const msg = err instanceof Error ? err.message : String(err);
+                pushMsg({ id: `err-${Date.now()}`, role: 'system', content: `error: ${msg}` });
+              }
+            })();
+            return;
+          }
+          case 'auth-logout': {
+            stopActiveProxy();
+            const r = await logoutFlow();
+            try {
+              const next = await saveConfig({
+                apiFlavor: 'openai',
+                baseUrl: 'https://api.deepseek.com',
+              });
+              setConfig(next);
+              clientRef.current = new DeepSeekClient(next);
+            } catch (err) {
+              const msg = err instanceof Error ? err.message : String(err);
+              pushMsg({
+                id: `err-${Date.now()}`,
+                role: 'system',
+                content: `error: failed to restore openai flavor — ${msg}`,
+              });
+            }
+            pushMsg({
+              id: `sys-${Date.now()}`,
+              role: 'system',
+              content: r.ok ? r.message : `error: ${r.message}`,
+            });
+            return;
+          }
+          case 'auth-whoami': {
+            const r = await whoamiFlow();
+            pushMsg({
+              id: `sys-${Date.now()}`,
+              role: 'system',
+              content: r.message,
+            });
+            return;
+          }
           case 'noop':
             if (action.message) pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: action.message });
             return;

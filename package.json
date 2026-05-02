@@ -12,7 +12,8 @@
     "build": "tsc -p tsconfig.json && chmod +x dist/cli.js",
     "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit",
-    "test:smoke": "tsx scripts/smoke.ts"
+    "test:smoke": "tsx scripts/smoke.ts",
+    "smoke:proxy": "tsx scripts/smoke-proxy.ts"
   },
   "files": [
     "bin",

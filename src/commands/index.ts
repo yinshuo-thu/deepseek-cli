@@ -12,7 +12,10 @@ export type SlashAction =
   | { type: 'open-config' }
   | { type: 'show-cost' }
   | { type: 'resume-picker' }
-  | { type: 'compact' };
+  | { type: 'compact' }
+  | { type: 'auth-login' }
+  | { type: 'auth-logout' }
+  | { type: 'auth-whoami' };
 
 export interface SlashContext {
   config: Config;
@@ -118,6 +121,21 @@ const COMMANDS: SlashSpec[] = [
     name: '/cwd',
     summary: 'Show the current working directory.',
     handler: (_, ctx) => ({ type: 'message', markdown: '`' + ctx.cwd + '`' }),
+  },
+  {
+    name: '/login',
+    summary: 'Authorize via DeepSeek web session (opens browser).',
+    handler: () => ({ type: 'auth-login' }),
+  },
+  {
+    name: '/logout',
+    summary: 'Clear stored web session.',
+    handler: () => ({ type: 'auth-logout' }),
+  },
+  {
+    name: '/whoami',
+    summary: 'Show current authentication source.',
+    handler: () => ({ type: 'auth-whoami' }),
   },
 ];
 

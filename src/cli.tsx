@@ -10,6 +10,8 @@ import { loadConfig, saveConfig, redact, type Config, type ModelId } from './con
 import { palette } from './ui/theme.js';
 import { WHALE_ART } from './ui/whale.js';
 import { DeepSeekClient } from './api/client.js';
+import { startProxyServer } from './auth/server.js';
+import { loadSession } from './auth/session.js';
 
 const VERSION = '0.1.0';
 
@@ -33,8 +35,34 @@ async function main() {
     ...(argv.model       ? { model: argv.model as ModelId }       : {}),
   };
 
+  // If we previously logged in via /login, lazy-start the proxy and rewrite
+  // baseUrl to point at it. Falls back to OpenAI flavor on failure.
+  if (config.apiFlavor === 'deepseek-web') {
+    const session = await loadSession();
+    if (session) {
+      try {
+        const proxy = await startProxyServer(session);
+        config.baseUrl = proxy.url;
+        // Provide a placeholder apiKey so DeepSeekClient.stream() won't bail
+        // before reaching the proxy (the proxy ignores Authorization for now).
+        if (!config.apiKey) config.apiKey = 'deepseek-web';
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`failed to start deepseek-web proxy: ${msg}; falling back to openai flavor`);
+        config.apiFlavor = 'openai';
+        config.baseUrl = 'https://api.deepseek.com';
+      }
+    } else {
+      console.warn('config has apiFlavor=deepseek-web but no session found; falling back to openai flavor');
+      config.apiFlavor = 'openai';
+      config.baseUrl = 'https://api.deepseek.com';
+    }
+  }
+
   // First-run wizard: no API key anywhere → ask interactively.
-  if (!config.apiKey) {
+  // Skip the wizard when we're on the deepseek-web flavor: the proxy is the
+  // auth source and any apiKey we have is just a placeholder.
+  if (!config.apiKey && config.apiFlavor !== 'deepseek-web') {
     const key = await firstRunWizard(config);
     if (!key) {
       console.error('No API key provided. Exiting.');
