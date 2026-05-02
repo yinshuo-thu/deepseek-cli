@@ -23,6 +23,18 @@ export interface WebSession {
   email?: string;
   /** Unix ms timestamp the session was persisted. */
   createdAt: number;
+  /**
+   * Optional cached chat_session_id from the most recent successful create.
+   * M2.1a does not reuse this across turns (Option A — stateless re-prompt),
+   * but the field is reserved for M2.1b's history-cache strategy.
+   */
+  chatSessionId?: string;
+  /**
+   * Unix ms of the last successful `validateCookie` round-trip. Used by the
+   * boot path to decide whether to re-validate before the first user
+   * message; not load-bearing for streaming.
+   */
+  lastValidatedAt?: number;
 }
 
 const SESSION_FILE = join(CONFIG_DIR, 'session.json');

@@ -1,20 +1,31 @@
-// Smoke test for the OpenAI-compatible mock proxy.
+// Smoke test for the OpenAI-compatible proxy.
 //
-// Spins up the proxy directly against a stub WebSession (skips the browser
-// auth dance), POSTs an OpenAI-shaped chat completion, and asserts that the
-// response streams back content in OpenAI SSE format.
+// Two modes:
+//   - DEFAULT (no env): live PoW + DS web wire format would require a real
+//     cookie, so this mode currently exercises the OpenAI shape against the
+//     real client. With DS_COOKIE unset, the test only validates that
+//     `/v1/models` works and that `/v1/chat/completions` returns *some*
+//     OpenAI-shaped error chunk + [DONE] (since the stub cookie won't pass
+//     validate). This keeps the mock-style "always green" smoke contract.
+//   - DS_COOKIE set: hit chat.deepseek.com end-to-end, expect a non-empty
+//     streamed reply.
 
 import { startProxyServer } from '../src/auth/server.js';
 import type { WebSession } from '../src/auth/session.js';
 
-const stubSession: WebSession = {
-  cookie: 'stub-cookie-for-smoke-test',
-  userId: 'stub-user',
-  createdAt: Date.now(),
-};
+const liveCookie = (process.env.DS_COOKIE ?? '').trim();
+const liveMode = liveCookie.length > 0;
 
-const proxy = await startProxyServer(stubSession);
-console.log(`proxy listening at ${proxy.url}`);
+const session: WebSession = liveMode
+  ? { cookie: liveCookie, userId: 'live-user', createdAt: Date.now() }
+  : { cookie: 'stub-cookie-for-smoke-test', userId: 'stub-user', createdAt: Date.now() };
+
+if (!liveMode) {
+  console.log('skipped live: no DS_COOKIE — running mock-shape smoke only');
+}
+
+const proxy = await startProxyServer(session);
+console.log(`proxy listening at ${proxy.url} (live=${liveMode})`);
 
 let exitCode = 0;
 try {
@@ -49,6 +60,7 @@ try {
   let assembled = '';
   let sawDone = false;
   let sawFinish = false;
+  let sawError = false;
   while (true) {
     const { done, value } = await reader.read();
     if (done) break;
@@ -60,18 +72,29 @@ try {
       if (!line.startsWith('data:')) continue;
       const data = line.slice(5).trim();
       if (data === '[DONE]') { sawDone = true; continue; }
-      const json = JSON.parse(data) as { choices?: Array<{ delta?: { content?: string }; finish_reason?: string }> };
+      const json = JSON.parse(data) as { choices?: Array<{ delta?: { content?: string }; finish_reason?: string }>; error?: { message?: string } };
       const choice = json.choices?.[0];
       if (choice?.delta?.content) assembled += choice.delta.content;
+      if (choice?.finish_reason === 'error' || json.error) sawError = true;
       if (choice?.finish_reason) sawFinish = true;
     }
   }
   console.log(`assembled content: ${JSON.stringify(assembled)}`);
-  if (!assembled.includes('[mock]')) throw new Error('assembled stream missing "[mock]" prefix');
-  if (!assembled.includes('hello world')) throw new Error('assembled stream missing echoed prompt');
   if (!sawFinish) throw new Error('no finish_reason chunk seen');
   if (!sawDone) throw new Error('no [DONE] sentinel seen');
-  console.log('smoke-proxy: ok');
+
+  if (liveMode) {
+    if (sawError) throw new Error('live mode: stream surfaced an error chunk');
+    if (assembled.length < 4) throw new Error(`live mode: assembled stream too short: ${JSON.stringify(assembled)}`);
+    console.log('smoke-proxy: ok (live)');
+  } else {
+    // Mock cookie path: dswebClient detects the stub cookie and emits a
+    // deterministic "[mock]" echo, so we keep the original assertions.
+    if (!assembled.includes('[mock]')) throw new Error('assembled stream missing "[mock]" prefix');
+    if (!assembled.includes('hello world')) throw new Error('assembled stream missing echoed prompt');
+    if (sawError) throw new Error('mock mode: unexpected error chunk');
+    console.log('smoke-proxy: ok (mock)');
+  }
 } catch (err) {
   exitCode = 1;
   console.error(`smoke-proxy: FAIL — ${err instanceof Error ? err.message : String(err)}`);

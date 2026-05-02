@@ -323,7 +323,13 @@ export function App({ config: initialConfig, version, initialRecentSessions }: P
         },
       });
 
-      // Sync new messages back into Session for persistence (skip system msg at idx 0).
+      // Sync new messages back into Session for persistence.
+      // apiMsgs layout going into the loop: [system, ...session.messages()].
+      // The agent loop mutates apiMsgs by appending the assistant reply, any
+      // tool calls, and tool results. We skip:
+      //   - index 0          (system message — never persisted)
+      //   - indices 1..N     (already in `session.messages()` from before the loop)
+      // and persist everything appended by the loop after that.
       const newApi = apiMsgs.slice(1 + session.messages().length);
       for (const m of newApi) await session.append(m);
 

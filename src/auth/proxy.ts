@@ -8,11 +8,16 @@
 
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
-import { DSWebClient, type DSWebEvent } from './dswebClient.js';
+import {
+  DSWebAuthError,
+  DSWebChallengeError,
+  DSWebClient,
+  type DSWebEvent,
+} from './dswebClient.js';
 
 const MAX_PROXY_BODY_BYTES = 1024 * 1024; // 1 MB
 
-interface OpenAIMessage {
+export interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant' | 'tool';
   content?: string | Array<{ type: string; text?: string }>;
 }
@@ -76,8 +81,8 @@ export class OpenAIProxy {
         });
         return;
       }
-      const prompt = lastUserPrompt(parsed.messages ?? []);
-      if (!prompt) {
+      const messages = parsed.messages ?? [];
+      if (!messages.some((m) => m.role === 'user')) {
         this.sendJson(res, 400, {
           error: { message: 'no user message found', type: 'invalid_request_error' },
         });
@@ -86,7 +91,7 @@ export class OpenAIProxy {
       const reasoning =
         parsed.model === 'deepseek-reasoner' || parsed.reasoning_effort === 'max';
 
-      await this.streamChat(res, prompt, { reasoning, model: parsed.model ?? 'deepseek-v4-flash' });
+      await this.streamChat(res, messages, { reasoning, model: parsed.model ?? 'deepseek-v4-flash' });
       return;
     }
 
@@ -97,7 +102,7 @@ export class OpenAIProxy {
 
   private async streamChat(
     res: ServerResponse,
-    prompt: string,
+    messages: OpenAIMessage[],
     opts: { reasoning: boolean; model: string },
   ): Promise<void> {
     if (!this.client) return; // already guarded above
@@ -132,7 +137,7 @@ export class OpenAIProxy {
       // Initial role chunk so OpenAI clients see a stable start.
       writeChunk({ role: 'assistant' });
 
-      for await (const ev of this.client.streamChat(prompt, { reasoning: opts.reasoning })) {
+      for await (const ev of this.client.streamChat(messages, { reasoning: opts.reasoning })) {
         const oai = translateEvent(ev);
         if (!oai) continue;
         if (oai.finish) {
@@ -143,15 +148,15 @@ export class OpenAIProxy {
       }
       res.write('data: [DONE]\n\n');
     } catch (err) {
-      const msg = err instanceof Error ? err.message : String(err);
+      const { message, errorType } = describeStreamError(err);
       res.write(
         `data: ${JSON.stringify({
           id,
           object: 'chat.completion.chunk',
           created,
           model,
-          choices: [{ index: 0, delta: {}, finish_reason: 'error' }],
-          error: { message: msg, type: 'server_error' },
+          choices: [{ index: 0, delta: { content: message }, finish_reason: 'error' }],
+          error: { message, type: errorType },
         })}\n\n`,
       );
       res.write('data: [DONE]\n\n');
@@ -168,19 +173,18 @@ export class OpenAIProxy {
   }
 }
 
-function lastUserPrompt(messages: OpenAIMessage[]): string {
-  for (let i = messages.length - 1; i >= 0; i--) {
-    const m = messages[i];
-    if (!m || m.role !== 'user') continue;
-    if (typeof m.content === 'string') return m.content;
-    if (Array.isArray(m.content)) {
-      return m.content
-        .map((p) => (p && typeof p.text === 'string' ? p.text : ''))
-        .filter(Boolean)
-        .join('\n');
-    }
+function describeStreamError(err: unknown): { message: string; errorType: string } {
+  if (err instanceof DSWebChallengeError) {
+    return {
+      message: 'DDoS-Guard challenge — refresh your cookie at chat.deepseek.com and run /login again.',
+      errorType: 'authentication_error',
+    };
   }
-  return '';
+  if (err instanceof DSWebAuthError) {
+    return { message: 'session expired, run /login again.', errorType: 'authentication_error' };
+  }
+  const msg = err instanceof Error ? err.message : String(err);
+  return { message: msg, errorType: 'server_error' };
 }
 
 function translateEvent(ev: DSWebEvent): { delta?: Record<string, unknown>; finish?: string } | null {

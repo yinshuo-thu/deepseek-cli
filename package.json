@@ -13,7 +13,8 @@
     "start": "node dist/cli.js",
     "typecheck": "tsc --noEmit",
     "test:smoke": "tsx scripts/smoke.ts",
-    "smoke:proxy": "tsx scripts/smoke-proxy.ts"
+    "smoke:proxy": "tsx scripts/smoke-proxy.ts",
+    "smoke:pow": "tsx scripts/smoke-pow.ts"
   },
   "files": [
     "bin",

@@ -69,9 +69,25 @@ Shipped through M2.0:
 - **Reasoning effort:** `off` / `high` / `max` — Shift+Tab cycles. `max` routes the turn to `deepseek-reasoner`
 - **Streaming agent loop** with permission prompts (allow once / always / deny) and Read-before-Write safety
 - **Per-project session persistence** at `~/.deepseek/projects/<slug>/sessions/` plus a `/resume` picker
-- **First-run API-key wizard** and ds2api-style **`/login` flow** with a local OpenAI-compatible reverse proxy (M2.0 ships a mock proxy; M2.1 wires the real DeepSeek-web format)
+- **First-run API-key wizard** and ds2api-style **`/login` flow** with a local OpenAI-compatible reverse proxy that wires the real DeepSeek-web format end-to-end (M2.1a) — see [the `/login` caveats](#login-reverse-proxy-caveats) below
 - **Two-pane Claude-Code-style splash** with Recent activity + What's new
 - DeepSeek-blue theme and whale brand art; Esc cancels the stream, Ctrl+C twice to exit
+
+## `/login` reverse-proxy caveats
+
+The `/login` flow speaks the **reverse-engineered chat.deepseek.com web protocol** — it is not an officially supported DeepSeek API surface. It works the same way [`ds2api`](https://github.com/CJackHwang/ds2api) does: paste the `Cookie` header from your logged-in browser tab, and a local OpenAI-compatible proxy rewrites every `/v1/chat/completions` request into a DeepSeek-web `chat_session/create` + `chat/completion` SSE handshake (with a pure-JS `DeepSeekHashV1` solver for the proof-of-work challenge when DeepSeek demands one).
+
+> **Best-effort, may break, may violate DeepSeek's Terms of Service.** Use at your own risk. The official API-key flavor (`DEEPSEEK_API_KEY`) remains the default and recommended path; `/login` is for users who prefer browser auth. DeepSeek can change the wire format, tighten Cloudflare gating, or revoke web sessions at any time, and we will not always patch the same week.
+
+### How to extract your cookie
+
+1. Open <https://chat.deepseek.com> in Chrome/Edge/Firefox and log in normally.
+2. Open DevTools (F12) → **Network** tab → reload the page.
+3. Click any request to `chat.deepseek.com/api/v0/...` → **Headers** → **Request Headers**.
+4. Copy the entire value of the `Cookie:` header (everything after `Cookie: `, all on one line — typically several KB).
+5. Run `/login` in deepseek-cli, paste the cookie into the local browser page that opens, and submit.
+
+If validation fails with "session expired" your cookie is stale (re-login at chat.deepseek.com). If it fails with "DDoS-Guard challenge" Cloudflare is gating that IP — pass a fresh challenge in your browser first, then retry.
 
 ## Architecture
 
