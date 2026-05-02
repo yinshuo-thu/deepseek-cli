@@ -1,21 +1,30 @@
-# 🐋 DeepSeek-CLI
+# DeepSeek-CLI
+
+<!-- The whale below renders in DeepSeek-blue (#4D6BFE) inside the TUI splash.
+     Markdown can't carry terminal colour, so this README shows it in plain ASCII. -->
+
+```
+                     .--:      =
+         :+***********=      =**-        -
+      .+**************+-     -****-.=++**=
+     =*******************+    =*********+.
+    =**********************=   .+*****+:
+   :*+.  .:++***********+****+. +***
+   +*=         -+******-.  +*******=
+   +*+           :*****==-  -******
+   :**=            -*****+:  +****-
+    +**=            .************=
+     +**=             =*********=
+      +**+-     =+=    :******+
+       .+***=.  -****:   -+****+:
+          =************++=-..-==-.
+             .==+++++==:
+```
 
 > A native, terminal-first coding agent for the **DeepSeek V4** model family — built to match the look-and-feel of Claude Code, command-for-command, while running entirely on your DeepSeek API key.
 
-```
-        .-""""""-.
-      .'          '.
-     /   O      O   \
-    :           '    :       DeepSeek-CLI
-    |                |       streaming · tools · agents
-    :    .------.    :
-     \  '        '  /
-      '. '------' .'
-        '-..____.-'
-```
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![Status](https://img.shields.io/badge/status-M1%20alpha-orange)
+![Status](https://img.shields.io/badge/status-M2%20alpha-orange)
 
 ---
 
@@ -25,9 +34,9 @@ There are two great DeepSeek terminal projects already (`Hmbown/DeepSeek-TUI` in
 
 1. **Identical UX to Claude Code.** Slash commands, tool cards, permission prompts, status bar, splash screen — all match the Claude reference, so muscle memory carries over.
 2. **TypeScript + Ink stack.** Same stack Anthropic uses for Claude Code itself; visual fidelity is highest here.
-3. **Native API + reverse-proxy login.** Officially supports `DEEPSEEK_API_KEY`, with optional ds2api-style web-session reverse proxy for users who prefer browser auth (M2).
+3. **Native API + reverse-proxy login.** Officially supports `DEEPSEEK_API_KEY`, with optional ds2api-style web-session reverse proxy for users who prefer browser auth.
 
-> Roadmap: see [TODO.md](TODO.md). M1 (this release) is a working MVP. M2–M5 add login proxy, subagents, MCP/Skills/Hooks, and binary distribution.
+> Roadmap: see [TODO.md](TODO.md). M2 (this release) adds the login proxy, plan/agent/yolo modes, reasoning tiers, and the two-pane splash. M3–M5 add subagents, MCP/Skills/Hooks, and binary distribution.
 
 ## Install
 
@@ -69,17 +78,21 @@ deepseek --print "summarise this repo's README" < README.md
 | `deepseek-v4-flash`   | default — fast, cheap, tool-capable | $0.14 in / $0.28 out         |
 | `deepseek-v4-pro`     | hard reasoning, long context        | $0.435 in / $0.87 out        |
 
-Switch in-session: `/model deepseek-v4-pro`.
+Switch in-session: `/model deepseek-v4-pro`. When `/reasoning max` is set, the agent transparently routes to `deepseek-reasoner` for that turn.
 
-## What works in M1
+## What works
 
-- Streaming chat with markdown + syntax-highlighted code blocks
-- Tool-calling loop (Read / Write / Edit / Bash) with Read-before-Write safety
-- Permission prompts (allow once / always / deny)
-- Slash commands: `/help` `/clear` `/model` `/config` `/cost` `/exit` `/cwd`
-- Per-project session persistence at `~/.deepseek/projects/<slug>/sessions/`
-- DeepSeek-blue theme + whale splash
-- Esc cancels stream, Ctrl+C twice to exit
+Shipped through M2.0:
+
+- **Slash commands:** `/help` `/clear` `/model` `/mode` `/reasoning` `/config` `/cost` `/resume` `/cwd` `/login` `/logout` `/whoami` `/exit`
+- **Tools:** Read · Write · Edit · Bash · Glob · Grep · list_dir · apply_patch · WebFetch · WebSearch
+- **Modes:** Plan / Agent / YOLO — Tab cycles through them with the input box empty
+- **Reasoning effort:** `off` / `high` / `max` — Shift+Tab cycles. `max` routes the turn to `deepseek-reasoner`
+- **Streaming agent loop** with permission prompts (allow once / always / deny) and Read-before-Write safety
+- **Per-project session persistence** at `~/.deepseek/projects/<slug>/sessions/` plus a `/resume` picker
+- **First-run API-key wizard** and ds2api-style **`/login` flow** with a local OpenAI-compatible reverse proxy (M2.0 ships a mock proxy; M2.1 wires the real DeepSeek-web format)
+- **Two-pane Claude-Code-style splash** with Recent activity + What's new
+- DeepSeek-blue theme and whale brand art; Esc cancels the stream, Ctrl+C twice to exit
 
 ## Architecture
 
@@ -92,24 +105,36 @@ src/
 │   └── types.ts       # ChatMessage, ToolCall, StreamEvent
 ├── agents/
 │   └── loop.ts        # stream → accumulate tool_calls → run → loop
-├── tools/             # Read · Write · Edit · Bash + permission semantics
+├── auth/              # /login proxy server + session store
+├── tools/             # Read · Write · Edit · Bash · Glob · Grep · list_dir · apply_patch · WebFetch · WebSearch
 ├── commands/          # slash-command registry
-├── ui/                # Splash, Message, StatusBar, Permission, theme, markdown
+├── ui/                # Splash, Message, StatusBar, Permission, ResumePicker, theme, markdown
 ├── session/           # per-project persistent message log
 └── config/            # ~/.deepseek/config.json + project key hashing
 ```
+
+## Multi-agent orchestration
+
+This project is *itself* built by a small fleet of role-specific Claude Code agents driven by the orchestrator in [`.claude/`](.claude/):
+
+- **`.claude/agents/`** — agent definition files. Each is a Markdown front-matter spec for a role (`plan`, `dev`, `eval`, `summary`, `github`) plus its tools and behavioural rules.
+- **`.claude/runs/`** — a chronological log of every round. Files like `2026-05-02-r03-dev-m20-skeleton.md` capture the prompt, the agent's output, and the evaluator's findings.
+
+The typical loop is *Plan → DEV → Eval → Summary* per milestone, with the GitHub agent handling commits and PRs. New contributors can read `runs/` to see exactly how each feature got built and why each design call was made.
 
 ## Comparison with related projects
 
 |                              | DeepSeek-CLI (this) | DeepSeek-TUI (Rust)  | ds2api (Go) |
 |------------------------------|:-------------------:|:--------------------:|:-----------:|
-| UX 1:1 with Claude Code      | ✅                  | partial              | n/a         |
-| Native streaming agent loop  | ✅                  | ✅                   | n/a         |
-| ds2api-style web login proxy | M2                  | ❌                   | ✅          |
-| MCP servers                  | M4                  | ✅                   | ❌          |
-| Subagents                    | M3                  | ✅                   | ❌          |
-| Skills + Hooks (Claude-style)| M4                  | ❌                   | ❌          |
-| TypeScript / Ink stack       | ✅                  | ❌ (Rust/ratatui)    | ❌ (Go)     |
+| UX 1:1 with Claude Code      | yes                 | partial              | n/a         |
+| Native streaming agent loop  | yes                 | yes                  | n/a         |
+| ds2api-style web login proxy | yes (M2.0 mock, M2.1 real) | no            | yes         |
+| Plan / Agent / YOLO modes    | yes                 | no                   | n/a         |
+| Reasoning-effort tiers       | yes                 | no                   | n/a         |
+| MCP servers                  | M4                  | yes                  | no          |
+| Subagents                    | M3                  | yes                  | no          |
+| Skills + Hooks (Claude-style)| M4                  | no                   | no          |
+| TypeScript / Ink stack       | yes                 | no (Rust/ratatui)    | no (Go)     |
 
 ## Configuration
 
@@ -121,7 +146,9 @@ src/
   "model": "deepseek-v4-flash",
   "theme": "dark",
   "telemetry": false,
-  "apiFlavor": "openai"
+  "apiFlavor": "openai",
+  "permissionMode": "agent",
+  "reasoningEffort": "off"
 }
 ```
 

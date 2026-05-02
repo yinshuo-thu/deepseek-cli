@@ -14,7 +14,7 @@ import { palette } from './ui/theme.js';
 import { DeepSeekClient } from './api/client.js';
 import { runAgentLoop } from './agents/loop.js';
 import { dispatch as dispatchSlash, commandNames } from './commands/index.js';
-import { Session, loadSession } from './session/history.js';
+import { Session, loadSession, type SessionMeta } from './session/history.js';
 import { saveConfig, type Config, type ModelId, type PermissionMode, type ReasoningEffort, CONFIG_FILE } from './config/index.js';
 import { loginFlow, logoutFlow, stopActiveProxy, whoamiFlow } from './commands/login.js';
 
@@ -35,6 +35,8 @@ Working directory: {{CWD}}.`;
 interface Props {
   config: Config;
   version: string;
+  /** Pre-loaded recent sessions for the Splash pane. Forwarded as-is. */
+  initialRecentSessions?: SessionMeta[];
 }
 
 interface PendingPermission {
@@ -43,7 +45,7 @@ interface PendingPermission {
   resolve: (d: 'once' | 'always' | 'deny') => void;
 }
 
-export function App({ config: initialConfig, version }: Props) {
+export function App({ config: initialConfig, version, initialRecentSessions }: Props) {
   const { exit } = useApp();
   const { stdout } = useStdout();
   const [config, setConfig] = useState<Config>(initialConfig);
@@ -345,7 +347,13 @@ export function App({ config: initialConfig, version }: Props) {
   return (
     <Box flexDirection="column" paddingX={1}>
       {messages.length === 0 && (
-        <Splash version={version} model={config.model} cwd={process.cwd()} termCols={termCols} />
+        <Splash
+          version={version}
+          model={config.model}
+          cwd={process.cwd()}
+          termCols={termCols}
+          initialRecent={initialRecentSessions}
+        />
       )}
 
       {messages.map((m) => <MessageView key={m.id} msg={m} />)}

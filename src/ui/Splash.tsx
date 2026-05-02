@@ -20,6 +20,13 @@ interface Props {
   model: string;
   cwd: string;
   termCols: number;
+  /**
+   * Pre-loaded recent sessions. When provided, Splash uses them directly and
+   * skips the async fetch — this avoids a re-render that would leave a
+   * partial first frame in terminal scrollback (the "double splash" bug).
+   * Callers should `await listSessions(cwd, 4)` before rendering.
+   */
+  initialRecent?: SessionMeta[];
 }
 
 interface Line {
@@ -36,11 +43,15 @@ const WHATS_NEW: Line[] = [
   { text: 'apply_patch for multi-hunk diffs' },
 ];
 
-export function Splash({ version, model, cwd, termCols }: Props) {
-  const [recent, setRecent] = useState<SessionMeta[]>([]);
+export function Splash({ version, model, cwd, termCols, initialRecent }: Props) {
+  const [recent, setRecent] = useState<SessionMeta[]>(initialRecent ?? []);
+  // Only fetch on mount when caller didn't pre-load. The pre-loaded path is
+  // strongly preferred (see prop docs) — this branch exists for legacy callers
+  // and mid-session remounts, where a brief re-render is acceptable.
   useEffect(() => {
+    if (initialRecent !== undefined) return;
     listSessions(cwd, 4).then(setRecent).catch(() => setRecent([]));
-  }, [cwd]);
+  }, [cwd, initialRecent]);
 
   // Two-pane needs ~102 cols (100 + outer paddingX); fall back below that.
   if (termCols < TOTAL_W + 2) {

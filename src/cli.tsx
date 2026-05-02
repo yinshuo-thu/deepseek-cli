@@ -12,6 +12,7 @@ import { WHALE_ART } from './ui/whale.js';
 import { DeepSeekClient } from './api/client.js';
 import { startProxyServer } from './auth/server.js';
 import { loadSession } from './auth/session.js';
+import { listSessions } from './session/history.js';
 
 const VERSION = '0.1.0';
 
@@ -83,10 +84,21 @@ async function main() {
     return;
   }
 
+  // Pre-load recent sessions BEFORE rendering so the splash renders once at
+  // its final height. If we waited for a useEffect inside Splash, the initial
+  // (recent=[]) frame would already be in scrollback by the time the async
+  // load completed and Splash re-rendered taller — producing a "double splash".
+  const initialRecentSessions = await listSessions(process.cwd(), 4).catch(() => []);
+
   // Render the TUI.
-  const { waitUntilExit } = render(<App config={config} version={VERSION} />, {
-    exitOnCtrlC: false,
-  });
+  const { waitUntilExit } = render(
+    <App
+      config={config}
+      version={VERSION}
+      initialRecentSessions={initialRecentSessions}
+    />,
+    { exitOnCtrlC: false },
+  );
   await waitUntilExit();
 }
 
