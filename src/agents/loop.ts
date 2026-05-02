@@ -5,8 +5,9 @@
 
 import type { ChatMessage } from '../api/types.js';
 import { DeepSeekClient, estimateCostUSD } from '../api/client.js';
-import { ALL_TOOLS, toolByName, markRead } from '../tools/index.js';
+import { toolsForMode, toolByName, markRead } from '../tools/index.js';
 import type { ToolContext } from '../tools/types.js';
+import type { PermissionMode } from '../config/index.js';
 
 export interface LoopCallbacks {
   onAssistantDelta: (delta: string) => void;
@@ -36,9 +37,10 @@ export async function runAgentLoop(args: {
   model: string;
   signal: AbortSignal;
   cb: LoopCallbacks;
+  mode: PermissionMode;
   maxTurns?: number;
 }): Promise<void> {
-  const { client, messages, cwd, model, signal, cb } = args;
+  const { client, messages, cwd, model, signal, cb, mode } = args;
   const maxTurns = args.maxTurns ?? 25;
   const persistentlyAllowed = new Set<string>(); // tools allowed for the rest of the turn-chain
 
@@ -46,6 +48,7 @@ export async function runAgentLoop(args: {
     cwd,
     log: cb.log,
     async requestPermission(tool, summary) {
+      if (mode === 'yolo') return 'once';                         // yolo: never ask
       if (persistentlyAllowed.has(tool)) return 'once';
       const decision = await cb.requestPermission(tool, summary);
       if (decision === 'always') persistentlyAllowed.add(tool);
@@ -53,7 +56,8 @@ export async function runAgentLoop(args: {
     },
   };
 
-  const tools = ALL_TOOLS.map((t) => t.definition);
+  // Tool surface narrows in plan mode (read-only).
+  const tools = toolsForMode(mode).map((t) => t.definition);
 
   for (let turn = 0; turn < maxTurns; turn++) {
     if (signal.aborted) { cb.onError('aborted'); return; }

@@ -57,9 +57,22 @@ Last updated: 2026-05-02
 - [x] `Bash` — exec with stream + 2-min timeout default
 - [x] `Glob` — glob match with mtime sort
 - [x] `Grep` — ripgrep w/ JS fallback
+- [x] `list_dir` — gitignore-aware structured listing
+- [x] `apply_patch` — atomic multi-file unified-diff apply
+- [x] `WebFetch` — http GET with HTML→text
+- [x] `WebSearch` — DuckDuckGo HTML scrape
 - [x] Permission prompt (allow once / always / deny)
+- [x] Plan / Agent / YOLO mode tool gating (toolsForMode)
 - [ ] Permission persistence per project (`~/.deepseek/projects/<hash>/permissions.json`)
 - [ ] Image read in `Read` tool
+
+### Modes & reasoning
+- [x] Permission modes: `plan` / `agent` / `yolo` (Claude-Code-style)
+- [x] `Tab` cycles modes when input is empty
+- [x] `Shift+Tab` cycles reasoning effort `off → high → max`
+- [x] Reasoning=max auto-switches model to `deepseek-reasoner`
+- [x] Status bar shows current mode + effort
+- [x] `/mode plan|agent|yolo` and `/reasoning off|high|max` slash commands
 
 ### Slash commands
 - [x] `/help` — list commands

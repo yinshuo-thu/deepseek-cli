@@ -15,7 +15,7 @@ import { DeepSeekClient } from './api/client.js';
 import { runAgentLoop } from './agents/loop.js';
 import { dispatch as dispatchSlash, commandNames } from './commands/index.js';
 import { Session, loadSession } from './session/history.js';
-import { saveConfig, type Config, type ModelId, CONFIG_FILE } from './config/index.js';
+import { saveConfig, type Config, type ModelId, type PermissionMode, type ReasoningEffort, CONFIG_FILE } from './config/index.js';
 
 const SYSTEM_PROMPT = `You are DeepSeek-CLI, a terminal-native coding agent powered by the DeepSeek V4 model family.
 
@@ -65,22 +65,35 @@ export function App({ config: initialConfig, version }: Props) {
     clientRef.current = new DeepSeekClient(config);
   }, [config]);
 
-  // Esc cancels an in-flight stream; double Ctrl+C exits.
+  // Esc cancels stream; double Ctrl+C exits; Tab cycles modes; Shift+Tab cycles reasoning.
   const lastCtrlC = useRef(0);
   useInput((inp, key) => {
     if (key.escape && busy) {
       abortRef.current?.abort();
+      return;
     }
     if (key.ctrl && inp === 'c') {
       const now = Date.now();
-      if (busy) {
-        abortRef.current?.abort();
-        return;
-      }
+      if (busy) { abortRef.current?.abort(); return; }
       if (now - lastCtrlC.current < 1500) exit();
       else lastCtrlC.current = now;
+      return;
     }
-  }, { isActive: !pendingPerm });
+    // Tab cycles permission mode (only when input is empty so it doesn't
+    // collide with shell-style completion behaviour).
+    if (key.tab && !key.shift && input === '' && !busy) {
+      const order: PermissionMode[] = ['plan', 'agent', 'yolo'];
+      const next = order[(order.indexOf(config.permissionMode) + 1) % order.length]!;
+      saveConfig({ permissionMode: next }).then(setConfig);
+      return;
+    }
+    if (key.tab && key.shift && input === '' && !busy) {
+      const order: ReasoningEffort[] = ['off', 'high', 'max'];
+      const next = order[(order.indexOf(config.reasoningEffort) + 1) % order.length]!;
+      saveConfig({ reasoningEffort: next }).then(setConfig);
+      return;
+    }
+  }, { isActive: !pendingPerm && !pickingSession });
 
   const pushMsg = useCallback((m: UIMessage) => {
     setMessages((prev) => [...prev, m]);
@@ -131,6 +144,18 @@ export function App({ config: initialConfig, version }: Props) {
             pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: `Model set to **${action.model}**.` });
             return;
           }
+          case 'set-mode': {
+            const next = await saveConfig({ permissionMode: action.mode });
+            setConfig(next);
+            pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: `Mode → **${action.mode}**.` });
+            return;
+          }
+          case 'set-reasoning': {
+            const next = await saveConfig({ reasoningEffort: action.effort });
+            setConfig(next);
+            pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: `Reasoning effort → **${action.effort}**.` });
+            return;
+          }
           case 'open-config': {
             const editor = process.env.EDITOR || 'vi';
             spawn(editor, [CONFIG_FILE], { stdio: 'inherit' });
@@ -170,12 +195,16 @@ export function App({ config: initialConfig, version }: Props) {
     const ctrl = new AbortController();
     abortRef.current = ctrl;
 
+    // Reasoning=max forces deepseek-reasoner; otherwise use the configured chat model.
+    const effectiveModel = config.reasoningEffort === 'max' ? 'deepseek-reasoner' : config.model;
+
     try {
       await runAgentLoop({
         client: clientRef.current,
         messages: apiMsgs,
         cwd: process.cwd(),
-        model: config.model,
+        model: effectiveModel,
+        mode: config.permissionMode,
         signal: ctrl.signal,
         cb: {
           onAssistantDelta: (d) => updateLastAssistant(d, 'assistant'),
@@ -218,9 +247,13 @@ export function App({ config: initialConfig, version }: Props) {
     return commandNames().filter((n) => n.startsWith(q)).slice(0, 6);
   }, [input]);
 
+  const termCols = stdout?.columns ?? 80;
+
   return (
     <Box flexDirection="column" paddingX={1}>
-      {messages.length === 0 && <Splash version={version} model={config.model} cwd={process.cwd()} />}
+      {messages.length === 0 && (
+        <Splash version={version} model={config.model} cwd={process.cwd()} termCols={termCols} />
+      )}
 
       {messages.map((m) => <MessageView key={m.id} msg={m} />)}
 
@@ -286,12 +319,15 @@ export function App({ config: initialConfig, version }: Props) {
       )}
 
       <StatusBar
-        model={config.model}
+        model={config.reasoningEffort === 'max' ? 'deepseek-reasoner' : config.model}
         cwd={process.cwd()}
         inputTokens={tokens.in}
         outputTokens={tokens.out}
         costUSD={tokens.cost}
         busy={busy}
+        mode={config.permissionMode}
+        reasoningEffort={config.reasoningEffort}
+        termCols={termCols}
       />
     </Box>
   );

@@ -9,6 +9,16 @@ export const PROJECTS_DIR = join(CONFIG_DIR, 'projects');
 
 export type ModelId = 'deepseek-v4-flash' | 'deepseek-v4-pro';
 
+/**
+ * Permission tier for the current turn-chain.
+ *  - plan : read-only investigation; Write/Edit/Bash refuse to run.
+ *  - agent: standard. Sensitive tools prompt for permission.
+ *  - yolo : auto-approve all tools. For trusted repos only.
+ */
+export type PermissionMode = 'plan' | 'agent' | 'yolo';
+
+export type ReasoningEffort = 'off' | 'high' | 'max';
+
 export interface Config {
   apiKey?: string;
   baseUrl: string;
@@ -17,6 +27,8 @@ export interface Config {
   telemetry: boolean;
   // Set to "anthropic" to use the /anthropic-prefixed endpoint.
   apiFlavor: 'openai' | 'anthropic';
+  permissionMode: PermissionMode;
+  reasoningEffort: ReasoningEffort;
 }
 
 export const DEFAULTS: Config = {
@@ -25,6 +37,8 @@ export const DEFAULTS: Config = {
   theme: 'dark',
   telemetry: false,
   apiFlavor: 'openai',
+  permissionMode: 'agent',
+  reasoningEffort: 'off',
 };
 
 export async function loadConfig(): Promise<Config> {

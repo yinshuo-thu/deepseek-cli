@@ -1,5 +1,5 @@
 // Slash-command registry. The App calls dispatch() and reacts to the returned action.
-import type { Config, ModelId } from '../config/index.js';
+import type { Config, ModelId, PermissionMode, ReasoningEffort } from '../config/index.js';
 
 export type SlashAction =
   | { type: 'noop'; message?: string }
@@ -7,6 +7,8 @@ export type SlashAction =
   | { type: 'clear' }
   | { type: 'exit' }
   | { type: 'set-model'; model: ModelId }
+  | { type: 'set-mode'; mode: PermissionMode }
+  | { type: 'set-reasoning'; effort: ReasoningEffort }
   | { type: 'open-config' }
   | { type: 'show-cost' }
   | { type: 'resume-picker' }
@@ -53,8 +55,42 @@ const COMMANDS: SlashSpec[] = [
         type: 'message',
         markdown:
           '**Usage:** `/model deepseek-v4-flash` or `/model deepseek-v4-pro`.\n\n' +
-          '- `deepseek-v4-flash` — fast, cheap, default for most tasks.\n' +
+          '- `deepseek-v4-flash` — fast, cheap, default.\n' +
           '- `deepseek-v4-pro` — strongest reasoning. Use for hard problems.',
+      };
+    },
+  },
+  {
+    name: '/mode',
+    summary: 'Switch permission mode. Usage: `/mode plan|agent|yolo`.',
+    handler: (rest) => {
+      const m = rest.trim();
+      if (m === 'plan' || m === 'agent' || m === 'yolo') {
+        return { type: 'set-mode', mode: m };
+      }
+      return {
+        type: 'message',
+        markdown:
+          '**Modes:** `/mode plan|agent|yolo`\n\n' +
+          '- `plan` — read-only. Safe for exploring an unfamiliar repo.\n' +
+          '- `agent` (default) — full toolbox; sensitive ops prompt.\n' +
+          '- `yolo` — auto-approve everything. Trusted repos only.',
+      };
+    },
+  },
+  {
+    name: '/reasoning',
+    summary: 'Set reasoning effort. Usage: `/reasoning off|high|max`.',
+    handler: (rest) => {
+      const r = rest.trim();
+      if (r === 'off' || r === 'high' || r === 'max') return { type: 'set-reasoning', effort: r };
+      return {
+        type: 'message',
+        markdown:
+          '**Reasoning:** `/reasoning off|high|max`\n\n' +
+          '- `off` — fast turn, no chain-of-thought.\n' +
+          '- `high` — moderate thinking budget.\n' +
+          '- `max` — full thinking budget; uses `deepseek-reasoner`.',
       };
     },
   },
@@ -99,7 +135,7 @@ export function dispatch(input: string, ctx: SlashContext): SlashAction | null {
 
 function helpMarkdown(): string {
   const rows = COMMANDS.map((c) => `- \`${c.name}\`${c.aliases ? ` (${c.aliases.join(', ')})` : ''} — ${c.summary}`);
-  return `**DeepSeek-CLI commands**\n\n${rows.join('\n')}\n\nPress **Esc** to cancel a streaming response. **Ctrl+C** twice to exit.`;
+  return `**DeepSeek-CLI commands**\n\n${rows.join('\n')}\n\n**Keys:** Tab cycles modes · Shift+Tab cycles reasoning · Esc cancels stream · Ctrl+C twice exits.`;
 }
 
 export function commandNames(): string[] {

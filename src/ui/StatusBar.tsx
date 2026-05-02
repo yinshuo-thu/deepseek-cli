@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import { palette } from './theme.js';
+import type { PermissionMode } from '../config/index.js';
 
 interface Props {
   model: string;
@@ -9,24 +10,74 @@ interface Props {
   outputTokens: number;
   costUSD: number;
   busy: boolean;
+  mode: PermissionMode;
+  reasoningEffort: 'off' | 'high' | 'max';
+  termCols: number;
 }
 
-export function StatusBar({ model, cwd, inputTokens, outputTokens, costUSD, busy }: Props) {
-  const cwdShort = cwd.replace(process.env.HOME ?? '', '~');
+const MODE_COLOR: Record<PermissionMode, string> = {
+  plan: palette.warn,
+  agent: palette.deepseekBlue,
+  yolo: palette.err,
+};
+
+const MODE_LABEL: Record<PermissionMode, string> = {
+  plan: 'plan',
+  agent: 'agent',
+  yolo: 'yolo',
+};
+
+export function StatusBar({ model, cwd, inputTokens, outputTokens, costUSD, busy, mode, reasoningEffort, termCols }: Props) {
+  // Right side has fixed width — left side gets the rest, with cwd truncation.
+  const right = `↑${inputTokens}  ↓${outputTokens}   $${costUSD.toFixed(4)}   ${MODE_LABEL[mode]}${reasoningEffort !== 'off' ? `·${reasoningEffort}` : ''}${busy ? '  · working' : ''}`;
+  const rightLen = right.length;
+
+  const cwdShort = shortenPath(cwd);
+  const dotModel = `● ${model}`;
+  const sep = '   ·   ';
+  const leftFull = `${dotModel}${sep}${cwdShort}`;
+
+  // Reserve 4 cols for borders/padding, plus 2-col gap between left and right.
+  const budget = Math.max(20, termCols - 4 - 2 - rightLen);
+  const left = leftFull.length > budget ? leftFull.slice(0, budget - 1) + '…' : leftFull;
+  const pad = ' '.repeat(Math.max(1, termCols - 4 - left.length - rightLen));
+
   return (
     <Box marginTop={1} paddingX={1} borderStyle="round" borderColor={palette.deepseekBlueDim}>
-      <Box flexGrow={1}>
-        <Text color={palette.fgMuted}>
-          <Text color={palette.deepseekBlue}>● </Text>
-          {model}  ·  {cwdShort}
-        </Text>
-      </Box>
-      <Box>
-        <Text color={palette.fgMuted}>
-          tokens <Text color={palette.fg}>{inputTokens}/{outputTokens}</Text>  ·  cost <Text color={palette.fg}>${costUSD.toFixed(4)}</Text>
-          {busy ? '  · ' : ''}{busy && <Text color={palette.warn}>working…</Text>}
-        </Text>
-      </Box>
+      <Text>
+        <Text color={palette.deepseekBlue}>● </Text>
+        <Text color={palette.fg}>{model}</Text>
+        <Text color={palette.fgMuted}>{sep}</Text>
+        <Text color={palette.fgMuted}>{truncateLeft(cwdShort, budget - dotModel.length - sep.length)}</Text>
+        <Text>{pad}</Text>
+        <Text color={palette.fgMuted}>↑</Text>
+        <Text color={palette.fg}>{inputTokens}</Text>
+        <Text color={palette.fgMuted}>  ↓</Text>
+        <Text color={palette.fg}>{outputTokens}</Text>
+        <Text color={palette.fgMuted}>   </Text>
+        <Text color={palette.fg}>${costUSD.toFixed(4)}</Text>
+        <Text color={palette.fgMuted}>   </Text>
+        <Text color={MODE_COLOR[mode]} bold>{MODE_LABEL[mode]}</Text>
+        {reasoningEffort !== 'off' && (
+          <>
+            <Text color={palette.fgMuted}>·</Text>
+            <Text color={palette.reasoning}>{reasoningEffort}</Text>
+          </>
+        )}
+        {busy && <Text color={palette.warn}>  · working</Text>}
+      </Text>
     </Box>
   );
+}
+
+function shortenPath(p: string): string {
+  const home = process.env.HOME ?? '';
+  if (home && p.startsWith(home)) return '~' + p.slice(home.length);
+  return p;
+}
+
+function truncateLeft(s: string, max: number): string {
+  if (max <= 0) return '';
+  if (s.length <= max) return s;
+  return '…' + s.slice(s.length - max + 1);
 }
