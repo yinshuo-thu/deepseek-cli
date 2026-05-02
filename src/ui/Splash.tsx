@@ -11,7 +11,8 @@ interface Props {
 }
 
 export function Splash({ version, model, cwd, termCols }: Props) {
-  const art = termCols >= 70 ? WHALE_ART : WHALE_ART_COMPACT;
+  // Wide art is 85 cols + 2 cols of paddingX; require a small margin.
+  const art = termCols >= 90 ? WHALE_ART : WHALE_ART_COMPACT;
   return (
     <Box flexDirection="column" marginBottom={1}>
       <Text color={palette.deepseekBlue}>{art}</Text>
