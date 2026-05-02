@@ -1,0 +1,806 @@
+{
+  "version": "1.0.0",
+  "domains": ["coding", "math", "writing", "debugging", "refactoring", "explanation", "creative", "analysis", "data", "qa"],
+  "cases": [
+    {
+      "id": "COD-001",
+      "domain": "coding",
+      "difficulty": "easy",
+      "prompt": "Write a TypeScript function that takes an array of numbers and returns the running average.",
+      "expected_traits": ["uses reduce or loop", "returns number[]", "handles empty array", "has TypeScript types"],
+      "tags": ["typescript", "array", "function"]
+    },
+    {
+      "id": "COD-002",
+      "domain": "coding",
+      "difficulty": "medium",
+      "prompt": "Implement a debounce function in TypeScript with generic types.",
+      "expected_traits": ["generic function", "setTimeout", "clearTimeout", "returns function"],
+      "tags": ["typescript", "debounce", "generics"]
+    },
+    {
+      "id": "COD-003",
+      "domain": "coding",
+      "difficulty": "medium",
+      "prompt": "Write a binary search implementation in TypeScript.",
+      "expected_traits": ["O(log n) mention or loop", "returns index or -1", "TypeScript types"],
+      "tags": ["typescript", "algorithm", "search"]
+    },
+    {
+      "id": "COD-004",
+      "domain": "coding",
+      "difficulty": "medium",
+      "prompt": "Implement a simple event emitter class in TypeScript.",
+      "expected_traits": ["on method", "emit method", "off method", "Map or object for listeners"],
+      "tags": ["typescript", "class", "events"]
+    },
+    {
+      "id": "COD-005",
+      "domain": "coding",
+      "difficulty": "medium",
+      "prompt": "Write a React hook useLocalStorage that syncs state with localStorage.",
+      "expected_traits": ["useState", "useEffect", "localStorage.getItem", "localStorage.setItem"],
+      "tags": ["react", "hooks", "localStorage"]
+    },
+    {
+      "id": "COD-006",
+      "domain": "coding",
+      "difficulty": "hard",
+      "prompt": "Implement a LRU cache in TypeScript with get and put methods.",
+      "expected_traits": ["Map usage", "capacity limit", "get O(1)", "put evicts LRU"],
+      "tags": ["typescript", "data-structure", "cache"]
+    },
+    {
+      "id": "COD-007",
+      "domain": "coding",
+      "difficulty": "medium",
+      "prompt": "Write a function to flatten a nested array of arbitrary depth in TypeScript.",
+      "expected_traits": ["recursive or stack approach", "Array.isArray", "TypeScript generics"],
+      "tags": ["typescript", "recursion", "array"]
+    },
+    {
+      "id": "COD-008",
+      "domain": "coding",
+      "difficulty": "hard",
+      "prompt": "Implement a simple Promise.all from scratch.",
+      "expected_traits": ["returns Promise", "handles rejection", "waits for all", "counter or array tracking"],
+      "tags": ["javascript", "promises", "async"]
+    },
+    {
+      "id": "COD-009",
+      "domain": "coding",
+      "difficulty": "hard",
+      "prompt": "Write a TypeScript decorator that logs method calls with timing.",
+      "expected_traits": ["decorator syntax", "console.log or timing", "wraps original method"],
+      "tags": ["typescript", "decorators", "metaprogramming"]
+    },
+    {
+      "id": "COD-010",
+      "domain": "coding",
+      "difficulty": "hard",
+      "prompt": "Implement a trie data structure for autocomplete in TypeScript.",
+      "expected_traits": ["insert method", "search method", "children map", "TypeScript class"],
+      "tags": ["typescript", "data-structure", "trie"]
+    },
+    {
+      "id": "MAT-001",
+      "domain": "math",
+      "difficulty": "easy",
+      "prompt": "What is the derivative of f(x) = x³ + 2x² - 5x + 3?",
+      "expected_traits": ["3x²", "4x", "-5", "step-by-step or formula"],
+      "tags": ["calculus", "derivatives", "polynomial"]
+    },
+    {
+      "id": "MAT-002",
+      "domain": "math",
+      "difficulty": "medium",
+      "prompt": "Explain the central limit theorem in simple terms.",
+      "expected_traits": ["sample mean", "normal distribution", "large sample size", "practical example"],
+      "tags": ["statistics", "probability", "theorem"]
+    },
+    {
+      "id": "MAT-003",
+      "domain": "math",
+      "difficulty": "easy",
+      "prompt": "Solve the system of equations: 2x + 3y = 12 and x - y = 1.",
+      "expected_traits": ["x = 3 or solution shown", "y = 2", "substitution or elimination method"],
+      "tags": ["algebra", "linear-equations", "systems"]
+    },
+    {
+      "id": "MAT-004",
+      "domain": "math",
+      "difficulty": "easy",
+      "prompt": "What is Big O notation and why does it matter?",
+      "expected_traits": ["asymptotic", "example O(n) O(log n) O(n²)", "ignores constants", "practical relevance"],
+      "tags": ["computer-science", "complexity", "algorithms"]
+    },
+    {
+      "id": "MAT-005",
+      "domain": "math",
+      "difficulty": "medium",
+      "prompt": "Calculate the probability of getting at least one 6 in 4 dice rolls.",
+      "expected_traits": ["1 - (5/6)^4", "≈ 0.518 or 51.8%", "complement rule"],
+      "tags": ["probability", "combinatorics", "dice"]
+    },
+    {
+      "id": "MAT-006",
+      "domain": "math",
+      "difficulty": "medium",
+      "prompt": "Explain gradient descent intuitively.",
+      "expected_traits": ["loss function", "learning rate", "minimum", "hill analogy or derivative"],
+      "tags": ["machine-learning", "optimization", "calculus"]
+    },
+    {
+      "id": "MAT-007",
+      "domain": "math",
+      "difficulty": "medium",
+      "prompt": "What is a Fourier transform and when is it useful?",
+      "expected_traits": ["frequency domain", "time domain", "audio or signal example", "decomposition"],
+      "tags": ["signal-processing", "mathematics", "transforms"]
+    },
+    {
+      "id": "MAT-008",
+      "domain": "math",
+      "difficulty": "medium",
+      "prompt": "Explain Bayes' theorem with a concrete medical test example.",
+      "expected_traits": ["P(A|B)", "prior", "likelihood", "false positive example"],
+      "tags": ["probability", "statistics", "bayes"]
+    },
+    {
+      "id": "MAT-009",
+      "domain": "math",
+      "difficulty": "easy",
+      "prompt": "What is the difference between variance and standard deviation?",
+      "expected_traits": ["same units", "square root", "spread of data", "formula or example"],
+      "tags": ["statistics", "descriptive-stats", "data-analysis"]
+    },
+    {
+      "id": "MAT-010",
+      "domain": "math",
+      "difficulty": "hard",
+      "prompt": "Prove that there are infinitely many prime numbers.",
+      "expected_traits": ["Euclid's proof", "contradiction", "p1*p2*...*pn + 1", "not divisible"],
+      "tags": ["number-theory", "proof", "primes"]
+    },
+    {
+      "id": "WRI-001",
+      "domain": "writing",
+      "difficulty": "easy",
+      "prompt": "Write a compelling product description for a wireless noise-canceling headphone.",
+      "expected_traits": ["features mentioned", "benefit-focused", "emotion or lifestyle", "call to action"],
+      "tags": ["copywriting", "marketing", "product"]
+    },
+    {
+      "id": "WRI-002",
+      "domain": "writing",
+      "difficulty": "easy",
+      "prompt": "Write a professional email declining a job offer politely.",
+      "expected_traits": ["gratitude", "clear decline", "professional tone", "brief reason"],
+      "tags": ["email", "professional", "communication"]
+    },
+    {
+      "id": "WRI-003",
+      "domain": "writing",
+      "difficulty": "easy",
+      "prompt": "Write a haiku about debugging code.",
+      "expected_traits": ["5-7-5 syllables", "coding theme", "metaphor"],
+      "tags": ["poetry", "creative", "haiku"]
+    },
+    {
+      "id": "WRI-004",
+      "domain": "writing",
+      "difficulty": "medium",
+      "prompt": "Write a 3-paragraph executive summary for a startup pitch.",
+      "expected_traits": ["problem statement", "solution", "market opportunity or traction"],
+      "tags": ["business", "pitch", "executive-summary"]
+    },
+    {
+      "id": "WRI-005",
+      "domain": "writing",
+      "difficulty": "easy",
+      "prompt": "Write a README introduction for a CLI tool called 'snapdb'.",
+      "expected_traits": ["what it does", "installation hint", "usage example", "badges or features"],
+      "tags": ["documentation", "readme", "cli"]
+    },
+    {
+      "id": "WRI-006",
+      "domain": "writing",
+      "difficulty": "easy",
+      "prompt": "Rewrite this sentence to be more concise: 'In the event that it should happen to rain tomorrow, it would be advisable for you to bring an umbrella with you.'",
+      "expected_traits": ["if it rains", "shorter", "bring an umbrella", "≤ 10 words"],
+      "tags": ["editing", "conciseness", "style"]
+    },
+    {
+      "id": "WRI-007",
+      "domain": "writing",
+      "difficulty": "easy",
+      "prompt": "Write a tweet-length (280 chars) announcement for a new open source library.",
+      "expected_traits": ["≤ 280 characters", "link placeholder or mention", "exciting tone", "hashtags optional"],
+      "tags": ["social-media", "marketing", "open-source"]
+    },
+    {
+      "id": "WRI-008",
+      "domain": "writing",
+      "difficulty": "medium",
+      "prompt": "Write a performance review template for a software engineer.",
+      "expected_traits": ["achievements section", "areas for improvement", "goals", "professional format"],
+      "tags": ["hr", "template", "performance"]
+    },
+    {
+      "id": "WRI-009",
+      "domain": "writing",
+      "difficulty": "medium",
+      "prompt": "Write a one-paragraph story opener featuring a robot archaeologist.",
+      "expected_traits": ["robot protagonist", "archaeological setting", "hook or tension", "vivid detail"],
+      "tags": ["fiction", "sci-fi", "creative"]
+    },
+    {
+      "id": "WRI-010",
+      "domain": "writing",
+      "difficulty": "easy",
+      "prompt": "Write changelog entry for adding dark mode to a web app.",
+      "expected_traits": ["version or date", "feature description", "action verb", "user benefit"],
+      "tags": ["changelog", "documentation", "release-notes"]
+    },
+    {
+      "id": "DBG-001",
+      "domain": "debugging",
+      "difficulty": "easy",
+      "prompt": "Why does this JavaScript code fail: `const obj = null; console.log(obj.name);`?",
+      "expected_traits": ["TypeError", "null dereference", "optional chaining fix", "null check suggestion"],
+      "tags": ["javascript", "null", "error"]
+    },
+    {
+      "id": "DBG-002",
+      "domain": "debugging",
+      "difficulty": "easy",
+      "prompt": "Find the bug: `async function fetchData() { const data = await fetch(url); return data; }` — the caller gets a Response not the JSON.",
+      "expected_traits": ["missing .json()", "await response.json()", "fix shown"],
+      "tags": ["javascript", "async", "fetch"]
+    },
+    {
+      "id": "DBG-003",
+      "domain": "debugging",
+      "difficulty": "medium",
+      "prompt": "This React component re-renders infinitely. Why? `useEffect(() => { setCount(count + 1); }, [count]);`",
+      "expected_traits": ["count in dependency", "infinite loop", "remove count from deps or use functional update"],
+      "tags": ["react", "useEffect", "hooks"]
+    },
+    {
+      "id": "DBG-004",
+      "domain": "debugging",
+      "difficulty": "easy",
+      "prompt": "Why does `0.1 + 0.2 !== 0.3` in JavaScript?",
+      "expected_traits": ["floating point", "IEEE 754", "toFixed or epsilon fix", "binary representation"],
+      "tags": ["javascript", "floating-point", "precision"]
+    },
+    {
+      "id": "DBG-005",
+      "domain": "debugging",
+      "difficulty": "easy",
+      "prompt": "Find the off-by-one error: `for (let i = 0; i <= arr.length; i++) { console.log(arr[i]); }`",
+      "expected_traits": ["<= should be <", "arr[arr.length] is undefined", "correct loop boundary"],
+      "tags": ["javascript", "loop", "off-by-one"]
+    },
+    {
+      "id": "DBG-006",
+      "domain": "debugging",
+      "difficulty": "medium",
+      "prompt": "Why does this cause a memory leak? `window.addEventListener('click', handler);` inside a React component without cleanup.",
+      "expected_traits": ["useEffect cleanup", "removeEventListener", "unmount", "listener accumulates"],
+      "tags": ["react", "memory-leak", "event-listener"]
+    },
+    {
+      "id": "DBG-007",
+      "domain": "debugging",
+      "difficulty": "easy",
+      "prompt": "Explain why `typeof null === 'object'` in JavaScript.",
+      "expected_traits": ["historical bug", "original 32-bit tags", "specification preserved it", "quirk"],
+      "tags": ["javascript", "typeof", "null"]
+    },
+    {
+      "id": "DBG-008",
+      "domain": "debugging",
+      "difficulty": "easy",
+      "prompt": "This Python code is slow: `result = ''; for s in strings: result += s`. What's the fix?",
+      "expected_traits": ["O(n²) string concat", "''.join(strings)", "immutable strings", "join is O(n)"],
+      "tags": ["python", "performance", "strings"]
+    },
+    {
+      "id": "DBG-009",
+      "domain": "debugging",
+      "difficulty": "hard",
+      "prompt": "Find the race condition: two async functions both read a counter, increment it, and write it back.",
+      "expected_traits": ["non-atomic", "read-modify-write", "atomic operation or lock", "lost update"],
+      "tags": ["concurrency", "race-condition", "async"]
+    },
+    {
+      "id": "DBG-010",
+      "domain": "debugging",
+      "difficulty": "easy",
+      "prompt": "Why does `git push` fail with 'rejected non-fast-forward'?",
+      "expected_traits": ["remote has commits", "git pull or fetch first", "diverged histories", "rebase or merge"],
+      "tags": ["git", "push", "version-control"]
+    },
+    {
+      "id": "REF-001",
+      "domain": "refactoring",
+      "difficulty": "easy",
+      "prompt": "Refactor this callback-based code to use async/await: `fs.readFile(path, (err, data) => { if (err) throw err; console.log(data); });`",
+      "expected_traits": ["async function", "await fs.promises.readFile", "try/catch", "cleaner structure"],
+      "tags": ["nodejs", "async", "callbacks"]
+    },
+    {
+      "id": "REF-002",
+      "domain": "refactoring",
+      "difficulty": "medium",
+      "prompt": "Extract a custom hook from this component that has both data fetching and UI logic mixed together. Show the pattern.",
+      "expected_traits": ["useData or similar hook name", "separate concerns", "returns data and loading state"],
+      "tags": ["react", "hooks", "separation-of-concerns"]
+    },
+    {
+      "id": "REF-003",
+      "domain": "refactoring",
+      "difficulty": "easy",
+      "prompt": "Replace this switch statement with a lookup table: `switch(action) { case 'ADD': ...; case 'REMOVE': ...; }`",
+      "expected_traits": ["object or Map", "handlers object", "dynamic dispatch", "fewer lines"],
+      "tags": ["javascript", "switch", "lookup-table"]
+    },
+    {
+      "id": "REF-004",
+      "domain": "refactoring",
+      "difficulty": "easy",
+      "prompt": "The function has 6 parameters. Suggest a refactoring.",
+      "expected_traits": ["options object", "destructuring", "named params", "easier to extend"],
+      "tags": ["javascript", "function-signature", "clean-code"]
+    },
+    {
+      "id": "REF-005",
+      "domain": "refactoring",
+      "difficulty": "medium",
+      "prompt": "Suggest how to refactor deeply nested if-else (4 levels deep) for readability.",
+      "expected_traits": ["early return", "guard clauses", "extract function", "reduce nesting"],
+      "tags": ["clean-code", "readability", "control-flow"]
+    },
+    {
+      "id": "REF-006",
+      "domain": "refactoring",
+      "difficulty": "medium",
+      "prompt": "Convert this class-based React component to a functional component with hooks.",
+      "expected_traits": ["useState for state", "useEffect for lifecycle", "functional syntax", "same behavior"],
+      "tags": ["react", "hooks", "class-components"]
+    },
+    {
+      "id": "REF-007",
+      "domain": "refactoring",
+      "difficulty": "easy",
+      "prompt": "The same data transformation is repeated 5 times in a file. How should this be refactored?",
+      "expected_traits": ["extract function", "DRY principle", "single source of truth", "named function"],
+      "tags": ["clean-code", "dry", "function-extraction"]
+    },
+    {
+      "id": "REF-008",
+      "domain": "refactoring",
+      "difficulty": "hard",
+      "prompt": "Refactor this to eliminate the god class: a 500-line UserManager that handles auth, profile, billing, and notifications.",
+      "expected_traits": ["single responsibility", "split into AuthService ProfileService etc", "composition"],
+      "tags": ["architecture", "solid", "god-class"]
+    },
+    {
+      "id": "REF-009",
+      "domain": "refactoring",
+      "difficulty": "medium",
+      "prompt": "How would you refactor a 300-line function into smaller pieces?",
+      "expected_traits": ["identify logical sections", "extract functions", "name by intent", "easier testing"],
+      "tags": ["clean-code", "function-extraction", "maintainability"]
+    },
+    {
+      "id": "REF-010",
+      "domain": "refactoring",
+      "difficulty": "hard",
+      "prompt": "Suggest refactoring for a function that returns null, -1, and undefined in different error cases.",
+      "expected_traits": ["Result type or Either", "consistent error handling", "throw or union type", "predictable"],
+      "tags": ["typescript", "error-handling", "types"]
+    },
+    {
+      "id": "EXP-001",
+      "domain": "explanation",
+      "difficulty": "medium",
+      "prompt": "Explain how HTTPS/TLS works in simple terms.",
+      "expected_traits": ["handshake", "certificate", "symmetric key", "encryption analogy"],
+      "tags": ["networking", "security", "tls"]
+    },
+    {
+      "id": "EXP-002",
+      "domain": "explanation",
+      "difficulty": "easy",
+      "prompt": "What is the difference between SQL JOIN types?",
+      "expected_traits": ["INNER JOIN", "LEFT JOIN", "NULL rows", "Venn diagram analogy"],
+      "tags": ["sql", "joins", "database"]
+    },
+    {
+      "id": "EXP-003",
+      "domain": "explanation",
+      "difficulty": "medium",
+      "prompt": "Explain event loop in Node.js.",
+      "expected_traits": ["call stack", "event queue", "libuv", "non-blocking", "microtasks"],
+      "tags": ["nodejs", "event-loop", "async"]
+    },
+    {
+      "id": "EXP-004",
+      "domain": "explanation",
+      "difficulty": "medium",
+      "prompt": "What is the CAP theorem?",
+      "expected_traits": ["Consistency", "Availability", "Partition tolerance", "only 2 of 3"],
+      "tags": ["distributed-systems", "cap-theorem", "database"]
+    },
+    {
+      "id": "EXP-005",
+      "domain": "explanation",
+      "difficulty": "medium",
+      "prompt": "Explain how git rebase differs from git merge.",
+      "expected_traits": ["linear history", "rewrites commits", "merge preserves", "when to use each"],
+      "tags": ["git", "rebase", "merge"]
+    },
+    {
+      "id": "EXP-006",
+      "domain": "explanation",
+      "difficulty": "medium",
+      "prompt": "What is dependency injection and why use it?",
+      "expected_traits": ["inversion of control", "testability", "pass dependencies in", "example"],
+      "tags": ["architecture", "design-patterns", "di"]
+    },
+    {
+      "id": "EXP-007",
+      "domain": "explanation",
+      "difficulty": "easy",
+      "prompt": "Explain recursion to a 10-year-old.",
+      "expected_traits": ["simple analogy", "base case", "calls itself", "mirrors or dolls example"],
+      "tags": ["computer-science", "recursion", "beginner"]
+    },
+    {
+      "id": "EXP-008",
+      "domain": "explanation",
+      "difficulty": "hard",
+      "prompt": "What is a monad in functional programming? (simple explanation)",
+      "expected_traits": ["wrapper or container", "chain operations", "Maybe or Option example", "flatMap"],
+      "tags": ["functional-programming", "monad", "haskell"]
+    },
+    {
+      "id": "EXP-009",
+      "domain": "explanation",
+      "difficulty": "easy",
+      "prompt": "Explain the difference between concurrency and parallelism.",
+      "expected_traits": ["concurrency is structure", "parallelism is execution", "single CPU vs multi", "example"],
+      "tags": ["computer-science", "concurrency", "parallelism"]
+    },
+    {
+      "id": "EXP-010",
+      "domain": "explanation",
+      "difficulty": "easy",
+      "prompt": "What is a webhook and how does it differ from polling?",
+      "expected_traits": ["server pushes", "polling pulls", "HTTP callback", "efficiency"],
+      "tags": ["web", "webhooks", "api"]
+    },
+    {
+      "id": "CRE-001",
+      "domain": "creative",
+      "difficulty": "easy",
+      "prompt": "Give me 5 creative names for a CLI tool that summarizes codebases.",
+      "expected_traits": ["5 names", "creative or punny", "code-related theme"],
+      "tags": ["naming", "branding", "cli"]
+    },
+    {
+      "id": "CRE-002",
+      "domain": "creative",
+      "difficulty": "easy",
+      "prompt": "Write a limerick about a developer who forgot to save their work.",
+      "expected_traits": ["AABBA rhyme scheme", "5 lines", "developer theme", "humor"],
+      "tags": ["poetry", "humor", "developer"]
+    },
+    {
+      "id": "CRE-003",
+      "domain": "creative",
+      "difficulty": "medium",
+      "prompt": "Suggest 3 innovative features for a next-generation code editor.",
+      "expected_traits": ["3 features", "novel ideas", "justified benefit", "not obvious"],
+      "tags": ["product", "ide", "innovation"]
+    },
+    {
+      "id": "CRE-004",
+      "domain": "creative",
+      "difficulty": "easy",
+      "prompt": "Design a fun error message for when a user tries to delete their entire database.",
+      "expected_traits": ["humorous tone", "warning", "confirms intent", "memorable"],
+      "tags": ["ux", "error-messages", "humor"]
+    },
+    {
+      "id": "CRE-005",
+      "domain": "creative",
+      "difficulty": "medium",
+      "prompt": "Write a short sci-fi scenario where an AI pair programmer becomes too helpful.",
+      "expected_traits": ["AI character", "programmer", "humorous or ironic", "narrative"],
+      "tags": ["fiction", "sci-fi", "ai"]
+    },
+    {
+      "id": "CRE-006",
+      "domain": "creative",
+      "difficulty": "hard",
+      "prompt": "Invent a programming language designed for poets.",
+      "expected_traits": ["creative syntax", "metaphorical keywords", "example code", "whimsy"],
+      "tags": ["programming-language", "creative", "poetry"]
+    },
+    {
+      "id": "CRE-007",
+      "domain": "creative",
+      "difficulty": "easy",
+      "prompt": "Create a motivational poster slogan for a developer working on a legacy codebase.",
+      "expected_traits": ["short slogan", "legacy code theme", "motivational tone", "memorable"],
+      "tags": ["humor", "legacy-code", "motivation"]
+    },
+    {
+      "id": "CRE-008",
+      "domain": "creative",
+      "difficulty": "medium",
+      "prompt": "Suggest a fun onboarding experience for a developer tool.",
+      "expected_traits": ["interactive", "gamified or narrative", "teaches key features", "memorable"],
+      "tags": ["ux", "onboarding", "developer-experience"]
+    },
+    {
+      "id": "CRE-009",
+      "domain": "creative",
+      "difficulty": "easy",
+      "prompt": "Write 3 commit messages for code that you secretly don't understand but fixed anyway.",
+      "expected_traits": ["3 messages", "humorous", "vague but plausible", "developer humor"],
+      "tags": ["git", "humor", "commit-messages"]
+    },
+    {
+      "id": "CRE-010",
+      "domain": "creative",
+      "difficulty": "medium",
+      "prompt": "Design a mascot for a CLI tool and describe its personality.",
+      "expected_traits": ["visual description", "personality traits", "connection to CLI theme", "memorable"],
+      "tags": ["branding", "design", "mascot"]
+    },
+    {
+      "id": "ANA-001",
+      "domain": "analysis",
+      "difficulty": "medium",
+      "prompt": "What are the tradeoffs between REST and GraphQL?",
+      "expected_traits": ["over-fetching", "type system", "caching", "complexity tradeoff", "use case guidance"],
+      "tags": ["api", "rest", "graphql"]
+    },
+    {
+      "id": "ANA-002",
+      "domain": "analysis",
+      "difficulty": "medium",
+      "prompt": "Analyze the pros and cons of microservices vs monolith architecture.",
+      "expected_traits": ["deployment complexity", "scalability", "team size", "latency", "recommendation"],
+      "tags": ["architecture", "microservices", "monolith"]
+    },
+    {
+      "id": "ANA-003",
+      "domain": "analysis",
+      "difficulty": "medium",
+      "prompt": "Compare PostgreSQL vs MongoDB for a social media app.",
+      "expected_traits": ["schema flexibility", "relationships", "query patterns", "scaling", "recommendation"],
+      "tags": ["database", "postgresql", "mongodb"]
+    },
+    {
+      "id": "ANA-004",
+      "domain": "analysis",
+      "difficulty": "medium",
+      "prompt": "What are the security implications of storing JWT tokens in localStorage?",
+      "expected_traits": ["XSS vulnerability", "httpOnly cookie alternative", "CSRF tradeoff", "recommendation"],
+      "tags": ["security", "jwt", "web"]
+    },
+    {
+      "id": "ANA-005",
+      "domain": "analysis",
+      "difficulty": "easy",
+      "prompt": "Evaluate the tradeoffs of TypeScript vs JavaScript for a new project.",
+      "expected_traits": ["type safety", "compilation step", "learning curve", "team size", "tooling"],
+      "tags": ["typescript", "javascript", "tradeoffs"]
+    },
+    {
+      "id": "ANA-006",
+      "domain": "analysis",
+      "difficulty": "hard",
+      "prompt": "What factors should influence the choice of a message queue (Kafka vs RabbitMQ vs SQS)?",
+      "expected_traits": ["throughput", "ordering guarantees", "managed vs self-hosted", "use case"],
+      "tags": ["messaging", "kafka", "rabbitmq"]
+    },
+    {
+      "id": "ANA-007",
+      "domain": "analysis",
+      "difficulty": "medium",
+      "prompt": "Analyze the performance implications of N+1 queries in an ORM.",
+      "expected_traits": ["N+1 problem defined", "lazy loading", "eager loading fix", "SQL example"],
+      "tags": ["orm", "database", "performance"]
+    },
+    {
+      "id": "ANA-008",
+      "domain": "analysis",
+      "difficulty": "medium",
+      "prompt": "What are the tradeoffs between SSR, SSG, and CSR in web apps?",
+      "expected_traits": ["SEO", "TTFB", "dynamic content", "framework examples", "when to use"],
+      "tags": ["web", "rendering", "ssr"]
+    },
+    {
+      "id": "ANA-009",
+      "domain": "analysis",
+      "difficulty": "medium",
+      "prompt": "Assess the risk of using a young, popular open-source library as a core dependency.",
+      "expected_traits": ["breaking changes", "maintenance risk", "lock-in", "mitigation strategies"],
+      "tags": ["open-source", "dependencies", "risk"]
+    },
+    {
+      "id": "ANA-010",
+      "domain": "analysis",
+      "difficulty": "hard",
+      "prompt": "Compare async/await vs reactive streams (RxJS) for handling complex async flows.",
+      "expected_traits": ["complexity", "backpressure", "composability", "learning curve", "use case"],
+      "tags": ["async", "rxjs", "reactive"]
+    },
+    {
+      "id": "DAT-001",
+      "domain": "data",
+      "difficulty": "easy",
+      "prompt": "Write a SQL query to find the top 5 customers by total purchase amount in the last 30 days.",
+      "expected_traits": ["GROUP BY", "SUM", "ORDER BY DESC", "LIMIT 5", "date filter"],
+      "tags": ["sql", "aggregation", "query"]
+    },
+    {
+      "id": "DAT-002",
+      "domain": "data",
+      "difficulty": "medium",
+      "prompt": "Explain the difference between OLTP and OLAP databases.",
+      "expected_traits": ["transactional vs analytical", "row vs column store", "latency vs throughput", "example"],
+      "tags": ["database", "oltp", "olap"]
+    },
+    {
+      "id": "DAT-003",
+      "domain": "data",
+      "difficulty": "easy",
+      "prompt": "Write a pandas one-liner to find rows where any column has a null value.",
+      "expected_traits": ["df.isnull()", ".any(axis=1)", "boolean indexing", "correct syntax"],
+      "tags": ["python", "pandas", "data-cleaning"]
+    },
+    {
+      "id": "DAT-004",
+      "domain": "data",
+      "difficulty": "medium",
+      "prompt": "What is database normalization and when would you denormalize?",
+      "expected_traits": ["1NF 2NF 3NF", "reduce redundancy", "denormalize for performance", "example"],
+      "tags": ["database", "normalization", "schema"]
+    },
+    {
+      "id": "DAT-005",
+      "domain": "data",
+      "difficulty": "medium",
+      "prompt": "Explain how a B-tree index works in a database.",
+      "expected_traits": ["balanced tree", "O(log n) lookup", "sorted", "range queries", "pages"],
+      "tags": ["database", "index", "b-tree"]
+    },
+    {
+      "id": "DAT-006",
+      "domain": "data",
+      "difficulty": "easy",
+      "prompt": "Write a regex to validate an email address (reasonable, not perfect).",
+      "expected_traits": ["@ symbol", "dot in domain", "regex syntax correct", "caveats mentioned"],
+      "tags": ["regex", "validation", "email"]
+    },
+    {
+      "id": "DAT-007",
+      "domain": "data",
+      "difficulty": "easy",
+      "prompt": "What is the difference between HAVING and WHERE in SQL?",
+      "expected_traits": ["WHERE filters rows", "HAVING filters groups", "aggregate functions", "ORDER matters"],
+      "tags": ["sql", "having", "where"]
+    },
+    {
+      "id": "DAT-008",
+      "domain": "data",
+      "difficulty": "hard",
+      "prompt": "How would you design a schema for a multi-tenant SaaS application?",
+      "expected_traits": ["tenant_id column", "row-level security or separate DB", "isolation strategy", "tradeoffs"],
+      "tags": ["database", "multi-tenant", "saas"]
+    },
+    {
+      "id": "DAT-009",
+      "domain": "data",
+      "difficulty": "easy",
+      "prompt": "Explain what a database transaction ACID guarantee means.",
+      "expected_traits": ["Atomicity", "Consistency", "Isolation", "Durability", "example"],
+      "tags": ["database", "acid", "transactions"]
+    },
+    {
+      "id": "DAT-010",
+      "domain": "data",
+      "difficulty": "medium",
+      "prompt": "Write a TypeScript function that groups an array of objects by a key.",
+      "expected_traits": ["reduce or forEach", "Record type", "generic", "handles missing keys"],
+      "tags": ["typescript", "array", "groupby"]
+    },
+    {
+      "id": "QNA-001",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "What is the difference between a process and a thread?",
+      "expected_traits": ["memory space", "lightweight", "scheduling", "shared memory vs isolated"],
+      "tags": ["os", "concurrency", "fundamentals"]
+    },
+    {
+      "id": "QNA-002",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "Explain what happens when you type a URL in a browser.",
+      "expected_traits": ["DNS lookup", "TCP connection", "HTTP request", "render"],
+      "tags": ["networking", "web", "dns"]
+    },
+    {
+      "id": "QNA-003",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "What is the Unix philosophy?",
+      "expected_traits": ["do one thing well", "pipes and filters", "text streams", "composability"],
+      "tags": ["unix", "philosophy", "design"]
+    },
+    {
+      "id": "QNA-004",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "What is the difference between authentication and authorization?",
+      "expected_traits": ["who you are vs what you can do", "login vs permissions", "example"],
+      "tags": ["security", "auth", "fundamentals"]
+    },
+    {
+      "id": "QNA-005",
+      "domain": "qa",
+      "difficulty": "medium",
+      "prompt": "What is eventual consistency?",
+      "expected_traits": ["distributed systems", "nodes sync eventually", "tradeoff with availability", "example"],
+      "tags": ["distributed-systems", "consistency", "cap"]
+    },
+    {
+      "id": "QNA-006",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "What does 'idempotent' mean in the context of HTTP methods?",
+      "expected_traits": ["same result if repeated", "GET PUT DELETE idempotent", "POST not idempotent", "example"],
+      "tags": ["http", "rest", "idempotent"]
+    },
+    {
+      "id": "QNA-007",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "What is the difference between compilation and interpretation?",
+      "expected_traits": ["ahead-of-time vs runtime", "speed tradeoff", "examples (C vs Python)", "JIT mention ok"],
+      "tags": ["computer-science", "compilers", "interpreters"]
+    },
+    {
+      "id": "QNA-008",
+      "domain": "qa",
+      "difficulty": "medium",
+      "prompt": "What is a hash collision and how do hash maps handle it?",
+      "expected_traits": ["same hash different key", "chaining or open addressing", "load factor", "resolution strategy"],
+      "tags": ["data-structure", "hash-map", "collision"]
+    },
+    {
+      "id": "QNA-009",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "Explain the difference between TCP and UDP.",
+      "expected_traits": ["reliable vs unreliable", "connection-oriented", "ordering", "use cases (video vs file)"],
+      "tags": ["networking", "tcp", "udp"]
+    },
+    {
+      "id": "QNA-010",
+      "domain": "qa",
+      "difficulty": "easy",
+      "prompt": "What is the difference between a library and a framework?",
+      "expected_traits": ["inversion of control", "you call library", "framework calls you", "examples"],
+      "tags": ["software-design", "library", "framework"]
+    }
+  ]
+}

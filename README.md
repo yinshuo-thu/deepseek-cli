@@ -117,19 +117,46 @@ This project is *itself* built by a small fleet of role-specific Claude Code age
 
 The typical loop is *Plan → DEV → Eval → Summary* per milestone, with the GitHub agent handling commits and PRs. New contributors can read `runs/` to see exactly how each feature got built and why each design call was made.
 
-## Comparison with related projects
+## Comparison with Claude Code
 
-|                              | DeepSeek-CLI (this) | DeepSeek-TUI (Rust)  | ds2api (Go) |
-|------------------------------|:-------------------:|:--------------------:|:-----------:|
-| UX 1:1 with Claude Code      | yes                 | partial              | n/a         |
-| Native streaming agent loop  | yes                 | yes                  | n/a         |
-| ds2api-style web login proxy | yes (M2.0 mock, M2.1 real) | no            | yes         |
-| Plan / Agent / YOLO modes    | yes                 | no                   | n/a         |
-| Reasoning-effort tiers       | yes                 | no                   | n/a         |
-| MCP servers                  | M4                  | yes                  | no          |
-| Subagents                    | M3                  | yes                  | no          |
-| Skills + Hooks (Claude-style)| M4                  | no                   | no          |
-| TypeScript / Ink stack       | yes                 | no (Rust/ratatui)    | no (Go)     |
+DeepSeek-CLI is designed as a feature-parallel open-source alternative to Claude Code, running on DeepSeek models instead of Claude. The table below tracks parity:
+
+| Feature | DeepSeek-CLI | <img src="https://avatars.githubusercontent.com/u/76263028?s=16&v=4" height="14" valign="middle"> Claude Code |
+|---------|:---:|:---:|
+| **Core UX** | | |
+| Streaming chat + Markdown rendering | ✅ | ✅ |
+| LaTeX math display (inline & block) | ✅ | ✅ |
+| Reasoning / thinking blocks | ✅ | ✅ |
+| Cost & token tracking (`/cost`) | ✅ | ✅ |
+| Plan / Agent / YOLO modes | ✅ | ✅ |
+| Permission prompts (once / always / deny) | ✅ | ✅ |
+| **Tools** | | |
+| Read · Write · Edit · Bash · Glob · Grep | ✅ | ✅ |
+| WebFetch · WebSearch | ✅ | ✅ |
+| apply\_patch | ✅ | ✅ |
+| Multi-agent (Agent / SendMessage / Monitor) | ✅ | ✅ |
+| Multimodal / image input | ❌ | ✅ |
+| **Slash Commands** | | |
+| `/help` · `/clear` · `/model` · `/mode` · `/cost` | ✅ | ✅ |
+| `/resume` + per-project session persistence | ✅ | ✅ |
+| `/compact` (context compression) | ✅ | ✅ |
+| `/doctor` · `/init` · `/bug` | ✅ | ✅ |
+| `/login` (browser OAuth / reverse proxy) | ✅ | ❌ |
+| `/reasoning` effort tiers (off / high / max) | ✅ | ❌ |
+| **Extensions** | | |
+| MCP servers | ✅ | ✅ |
+| Skills (slash commands loaded from `.md`) | ✅ | ✅ |
+| Hooks (PreToolUse / PostToolUse / Stop / UserPromptSubmit) | ✅ | ✅ |
+| **Auth & Distribution** | | |
+| API key auth (`DEEPSEEK_API_KEY`) | ✅ | ✅ |
+| Browser-session login proxy (ds2api-style) | ✅ | ❌ |
+| `npm link` global install | ✅ | ✅ |
+| IDE integration (VS Code / JetBrains) | ❌ | ✅ |
+| One-line binary installer | 🔜 M5 | ✅ |
+| **Advanced** | | |
+| Memory system (project-level `CLAUDE.md`) | ❌ | ✅ |
+| Background / scheduled agents | ❌ | ✅ |
+| Git-aware operations (native git tool) | ❌ | ✅ |
 
 ## Configuration
 

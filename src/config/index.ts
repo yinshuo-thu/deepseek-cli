@@ -15,11 +15,13 @@ export type ModelId = 'deepseek-v4-flash' | 'deepseek-v4-pro';
 
 /**
  * Permission tier for the current turn-chain.
- *  - plan : read-only investigation; Write/Edit/Bash refuse to run.
- *  - agent: standard. Sensitive tools prompt for permission.
- *  - yolo : auto-approve all tools. For trusted repos only.
+ *  - plan        : read-only investigation; Write/Edit/Bash refuse to run.
+ *  - acceptEdits : allows Read/Write/Edit but blocks Bash/shell execution.
+ *  - agent       : standard. Sensitive tools prompt for permission.
+ *  - yolo        : auto-approve all tools. For trusted repos only.
+ *  - default     : alias for 'agent' (settings-hierarchy compat).
  */
-export type PermissionMode = 'plan' | 'agent' | 'yolo';
+export type PermissionMode = 'plan' | 'acceptEdits' | 'agent' | 'yolo' | 'default';
 
 export type ReasoningEffort = 'off' | 'high' | 'max';
 

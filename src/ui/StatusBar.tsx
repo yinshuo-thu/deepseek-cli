@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Box, Text } from 'ink';
 import { palette } from './theme.js';
 import type { PermissionMode } from '../config/index.js';
+import { type ActivityPhase, verbForPhase } from './statusVerbs.js';
 
 interface Props {
   model: string;
@@ -10,6 +11,7 @@ interface Props {
   outputTokens: number;
   costUSD: number;
   busy: boolean;
+  activity: ActivityPhase | null; // current phase, null when idle
   mode: PermissionMode;
   reasoningEffort: 'off' | 'high' | 'max';
   termCols: number;
@@ -17,19 +19,34 @@ interface Props {
 
 const MODE_COLOR: Record<PermissionMode, string> = {
   plan: palette.warn,
+  acceptEdits: palette.fgMuted,
   agent: palette.deepseekBlue,
   yolo: palette.err,
+  default: palette.deepseekBlue,
 };
 
 const MODE_LABEL: Record<PermissionMode, string> = {
   plan: 'plan',
+  acceptEdits: 'accept-edits',
   agent: 'agent',
   yolo: 'yolo',
+  default: 'agent',
 };
 
-export function StatusBar({ model, cwd, inputTokens, outputTokens, costUSD, busy, mode, reasoningEffort, termCols }: Props) {
-  // Right side has fixed width — left side gets the rest, with cwd truncation.
-  const right = `↑${inputTokens}  ↓${outputTokens}   $${costUSD.toFixed(4)}   ${MODE_LABEL[mode]}${reasoningEffort !== 'off' ? `·${reasoningEffort}` : ''}${busy ? '  · working' : ''}`;
+export function StatusBar({ model, cwd, inputTokens, outputTokens, costUSD, busy, activity, mode, reasoningEffort, termCols }: Props) {
+  // Pick a verb once per phase transition, not on a timer.
+  // useRef so re-renders don't re-pick; resets when activity changes.
+  const lastActivity = useRef<ActivityPhase | null>(null);
+  const verbRef = useRef<string>('Working');
+
+  if (activity !== lastActivity.current) {
+    lastActivity.current = activity;
+    verbRef.current = verbForPhase(activity ?? 'working');
+  }
+
+  const statusVerb = verbRef.current;
+
+  const right = `↑${inputTokens}  ↓${outputTokens}   $${costUSD.toFixed(4)}   ${MODE_LABEL[mode]}${reasoningEffort !== 'off' ? `·${reasoningEffort}` : ''}${busy ? `  · ${statusVerb}…` : ''}`;
   const rightLen = right.length;
 
   const cwdShort = shortenPath(cwd);
@@ -37,7 +54,6 @@ export function StatusBar({ model, cwd, inputTokens, outputTokens, costUSD, busy
   const sep = '   ·   ';
   const leftFull = `${dotModel}${sep}${cwdShort}`;
 
-  // Reserve 4 cols for borders/padding, plus 2-col gap between left and right.
   const budget = Math.max(20, termCols - 4 - 2 - rightLen);
   const left = leftFull.length > budget ? leftFull.slice(0, budget - 1) + '…' : leftFull;
   const pad = ' '.repeat(Math.max(1, termCols - 4 - left.length - rightLen));
@@ -64,7 +80,7 @@ export function StatusBar({ model, cwd, inputTokens, outputTokens, costUSD, busy
             <Text color={palette.reasoning}>{reasoningEffort}</Text>
           </>
         )}
-        {busy && <Text color={palette.warn}>  · working</Text>}
+        {busy && <Text color={palette.warn}>  · {statusVerb}…</Text>}
       </Text>
     </Box>
   );

@@ -4,7 +4,7 @@
 > Convention: `[ ]` = pending · `[~]` = in progress · `[x]` = done · `[!]` = blocked
 > Goal: feature-parity with Anthropic's Claude Code CLI, surfaced over the DeepSeek V4 model family.
 
-Last updated: 2026-05-02
+Last updated: 2026-05-03
 
 ---
 
@@ -133,15 +133,15 @@ Last updated: 2026-05-02
 
 ## M4 — MCP, Skills, Hooks, Permission modes
 
-- [ ] **MCP client** — connect to MCP servers over stdio + SSE; mount their tools
-- [ ] `mcp.json` discovery (project + user scope)
-- [ ] **Skills** — `.deepseek/skills/<name>/SKILL.md`; auto-load on trigger
-- [ ] Skill invocation tool (`Skill(name, args)`)
-- [ ] **Hooks** — `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop` events
-- [ ] Hook config in `settings.json`; matchers + commands
-- [ ] **Permission modes** — `default`, `acceptEdits`, `plan`, `bypassPermissions`
-- [ ] Plan mode renders an `ExitPlanMode` confirmation
-- [ ] Settings hierarchy: enterprise → user → project → local
+- [x] **MCP client** — connect to MCP servers over stdio + SSE; mount their tools
+- [x] `mcp.json` discovery (project + user scope)
+- [x] **Skills** — `.deepseek/skills/<name>/SKILL.md`; auto-load on trigger
+- [x] Skill invocation tool (`Skill(name, args)`)
+- [x] **Hooks** — `PreToolUse`, `PostToolUse`, `UserPromptSubmit`, `Stop` events
+- [x] Hook config in `settings.json`; matchers + commands
+- [x] **Permission modes** — `default`, `acceptEdits`, `plan`, `bypassPermissions`
+- [x] Plan mode renders an `ExitPlanMode` confirmation
+- [x] Settings hierarchy: enterprise → user → project → local
 
 ---
 
@@ -173,9 +173,9 @@ Last updated: 2026-05-02
 | `/init`     | `/init`      | M3 |
 | `/review`   | `/review`    | M3 |
 | `/agents`   | `/agents`    | M3 |
-| `/mcp`      | `/mcp`       | M4 |
-| `/hooks`    | `/hooks`     | M4 |
-| `/permissions` | `/permissions` | M4 |
+| `/mcp`      | `/mcp`       | M4 done |
+| `/hooks`    | `/hooks`     | M4 done |
+| `/permissions` | `/permissions` | M4 done |
 | `/login`    | `/login`     | M2 |
 | `/logout`   | `/logout`    | M2 |
 | `/doctor`   | `/doctor`    | M5 |

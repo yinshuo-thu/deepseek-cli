@@ -28,10 +28,34 @@ marked.use(
   }) as any,
 );
 
+/**
+ * Convert LaTeX math delimiters to terminal-friendly backtick form before
+ * handing off to marked. This prevents raw \(...\) / \[...\] / $$...$$ from
+ * appearing as noisy escape sequences in the terminal.
+ *
+ * Display-math (\[...\] and $$...$$) → fenced code block (no language tag).
+ * Inline-math (\(...\) and $...$)    → backtick span.
+ */
+export function preprocessLatex(text: string): string {
+  // Block math: \[...\]
+  text = text.replace(/\\\[([\s\S]*?)\\\]/g, (_m, math: string) =>
+    `\n\`\`\`\n${math.trim()}\n\`\`\`\n`);
+  // Block math: $$...$$
+  text = text.replace(/\$\$([\s\S]*?)\$\$/g, (_m, math: string) =>
+    `\n\`\`\`\n${math.trim()}\n\`\`\`\n`);
+  // Inline math: \(...\)
+  text = text.replace(/\\\(([\s\S]*?)\\\)/g, (_m, math: string) =>
+    `\`${math.trim()}\``);
+  // Inline math: $...$ (only single-line, to avoid false positives with $ in shell snippets)
+  text = text.replace(/\$([^\n$`]{1,200}?)\$/g, (_m, math: string) =>
+    `\`${math.trim()}\``);
+  return text;
+}
+
 /** Render markdown to ANSI for an Ink <Text> with raw=true. */
 export function renderMarkdown(md: string): string {
   try {
-    return marked.parse(md) as string;
+    return marked.parse(preprocessLatex(md)) as string;
   } catch {
     return md;
   }

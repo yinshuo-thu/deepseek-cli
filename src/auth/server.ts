@@ -4,6 +4,9 @@
 // browser, plus an awaitResult promise that resolves once the user posts a
 // valid cookie (or rejects on timeout). The caller is responsible for
 // `close()`-ing the server when the flow is finished.
+//
+// /authorize/submit accepts CORS POSTs from chat.deepseek.com so the JS
+// console snippet running in the DeepSeek tab can post the cookie cross-origin.
 
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 
@@ -25,6 +28,7 @@ export interface AuthServerHandle {
 
 const PREFERRED_PORT = 31337;
 const TIMEOUT_MS = 5 * 60 * 1000;
+const DS_ORIGIN = 'https://chat.deepseek.com';
 
 async function listenOn(server: Server, port: number, host: string): Promise<number> {
   return await new Promise((resolve, reject) => {
@@ -91,7 +95,7 @@ function parseSubmission(contentType: string | undefined, body: string): { cooki
     }
     return {};
   }
-  // default: urlencoded
+  // default: urlencoded (used by the JS bookmarklet / form submit)
   const params = new URLSearchParams(body);
   const cookie = params.get('cookie');
   return cookie ? { cookie } : {};
@@ -104,6 +108,24 @@ function send(res: ServerResponse, status: number, contentType: string, body: st
   res.end(body);
 }
 
+/**
+ * Add CORS headers for the /authorize/submit endpoint.
+ * We allow chat.deepseek.com as origin so the JS console snippet can POST
+ * the cookie cross-origin without any browser security block.
+ */
+function setCorsHeaders(req: IncomingMessage, res: ServerResponse): void {
+  const origin = req.headers.origin ?? '';
+  // Allow the DeepSeek website and localhost origins.
+  if (origin === DS_ORIGIN || origin.startsWith('http://127.0.0.1') || origin.startsWith('http://localhost')) {
+    res.setHeader('access-control-allow-origin', origin);
+  } else {
+    res.setHeader('access-control-allow-origin', DS_ORIGIN);
+  }
+  res.setHeader('access-control-allow-methods', 'POST, OPTIONS');
+  res.setHeader('access-control-allow-headers', 'content-type');
+  res.setHeader('access-control-max-age', '86400');
+}
+
 export async function startAuthServer(): Promise<AuthServerHandle> {
   let resolveResult!: (r: AuthResult) => void;
   let rejectResult!: (err: Error) => void;
@@ -113,28 +135,44 @@ export async function startAuthServer(): Promise<AuthServerHandle> {
   });
 
   let settled = false;
+  let authed = false;
   const settle = (fn: () => void) => {
     if (settled) return;
     settled = true;
     fn();
   };
 
+  // Port is chosen at listen time; we need it for the page's submitUrl.
+  let boundPort = PREFERRED_PORT;
+
   const server = createServer(async (req, res) => {
     try {
       const url = req.url ?? '/';
       const method = (req.method ?? 'GET').toUpperCase();
 
+      // CORS preflight for /authorize/submit.
+      if (method === 'OPTIONS' && url === '/authorize/submit') {
+        setCorsHeaders(req, res);
+        res.statusCode = 204;
+        res.end();
+        return;
+      }
+
       if (method === 'GET' && url === '/healthz') {
-        send(res, 200, 'text/plain; charset=utf-8', 'ok');
+        // Return 'authed' after a successful submit so the polling JS in the
+        // authorize page can detect completion without a page reload.
+        send(res, 200, 'text/plain; charset=utf-8', authed ? 'authed' : 'ok');
         return;
       }
 
       if (method === 'GET' && (url === '/' || url === '/authorize')) {
-        send(res, 200, 'text/html; charset=utf-8', authorizePage({}));
+        const submitUrl = `http://127.0.0.1:${boundPort}/authorize/submit`;
+        send(res, 200, 'text/html; charset=utf-8', authorizePage({}, submitUrl));
         return;
       }
 
       if (method === 'POST' && url === '/authorize/submit') {
+        setCorsHeaders(req, res);
         let body: string;
         try {
           body = await readBody(req);
@@ -163,6 +201,7 @@ export async function startAuthServer(): Promise<AuthServerHandle> {
           createdAt: Date.now(),
         };
         await saveSession(session);
+        authed = true;
         send(res, 200, 'text/html; charset=utf-8', authorizePage({ success: true }));
         settle(() => resolveResult({ session }));
         return;
@@ -175,7 +214,6 @@ export async function startAuthServer(): Promise<AuthServerHandle> {
     }
   });
 
-  let boundPort: number;
   try {
     boundPort = await listenOn(server, PREFERRED_PORT, '127.0.0.1');
   } catch {
@@ -188,7 +226,6 @@ export async function startAuthServer(): Promise<AuthServerHandle> {
     settle(() => rejectResult(new Error('Login timed out after 5 minutes — no cookie submitted.')));
     try { server.close(); } catch { /* ignore */ }
   }, TIMEOUT_MS);
-  // Don't keep the event loop alive just for the timeout.
   if (typeof timeout.unref === 'function') timeout.unref();
 
   const close = () => {
@@ -231,14 +268,13 @@ export async function startProxyServer(session: WebSession): Promise<ProxyServer
   });
 
   // Always pick an ephemeral port for the proxy: the auth server may still be
-  // bound to :31337 when /login completes, and we don't need a stable port
-  // for outgoing localhost traffic.
+  // bound to :31337 when /login completes.
   const port = await listenOn(server, 0, '127.0.0.1');
-  const url = `http://127.0.0.1:${port}/v1`;
+  const proxyUrl = `http://127.0.0.1:${port}/v1`;
 
-  const close = () => {
+  const closeProxy = () => {
     try { server.close(); } catch { /* ignore */ }
   };
 
-  return { url, port, close };
+  return { url: proxyUrl, port, close: closeProxy };
 }

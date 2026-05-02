@@ -1,0 +1,88 @@
+{
+  "cases": [
+    {
+      "id": "COD-001",
+      "domain": "coding",
+      "difficulty": "easy",
+      "tags": [
+        "typescript",
+        "array",
+        "function"
+      ],
+      "prompt": "Write a TypeScript function that takes an array of numbers and returns the running average.",
+      "expected_traits": [
+        "uses reduce or loop",
+        "returns number[]",
+        "handles empty array",
+        "has TypeScript types"
+      ],
+      "status": "pass",
+      "response": "Here is a TypeScript function using a loop that returns number[] and handles empty array with TypeScript types: function runningAverage(nums: number[]): number[] { if (nums.length === 0) return []; let sum = 0; return nums.map((n, i) => { sum += n; return sum / (i + 1); }); }",
+      "score": 75,
+      "timestamp": "2026-05-02T17:45:26.314Z",
+      "trait_results": [
+        {
+          "trait": "uses reduce or loop",
+          "pass": true,
+          "reason": "matched 1/2 keywords"
+        },
+        {
+          "trait": "returns number[]",
+          "pass": true,
+          "reason": "matched 1/1 keywords"
+        },
+        {
+          "trait": "handles empty array",
+          "pass": true,
+          "reason": "matched 1/1 keywords"
+        },
+        {
+          "trait": "has TypeScript types",
+          "pass": false,
+          "reason": "only 0/1 keywords found"
+        }
+      ]
+    },
+    {
+      "id": "COD-002",
+      "domain": "coding",
+      "difficulty": "medium",
+      "tags": [
+        "typescript",
+        "debounce",
+        "generics"
+      ],
+      "prompt": "Implement a debounce function in TypeScript with generic types.",
+      "expected_traits": [
+        "generic function",
+        "setTimeout",
+        "clearTimeout",
+        "returns function"
+      ],
+      "status": "pending",
+      "response": null,
+      "score": null,
+      "timestamp": "2026-05-02T17:45:26.314Z"
+    },
+    {
+      "id": "COD-003",
+      "domain": "coding",
+      "difficulty": "medium",
+      "tags": [
+        "typescript",
+        "algorithm",
+        "search"
+      ],
+      "prompt": "Write a binary search implementation in TypeScript.",
+      "expected_traits": [
+        "O(log n) mention or loop",
+        "returns index or -1",
+        "TypeScript types"
+      ],
+      "status": "pending",
+      "response": null,
+      "score": null,
+      "timestamp": "2026-05-02T17:45:26.314Z"
+    }
+  ]
+}

@@ -13,6 +13,7 @@ import { DeepSeekClient } from './api/client.js';
 import { startProxyServer } from './auth/server.js';
 import { loadSession } from './auth/session.js';
 import { listSessions } from './session/history.js';
+import { mcpRegistry } from './mcp/registry.js';
 
 const VERSION = '0.1.0';
 
@@ -83,6 +84,12 @@ async function main() {
     await printOnce(config, initialPrompt);
     return;
   }
+
+  // Kick off MCP registry connections in the background — non-blocking. Tools
+  // become visible once `tools/list` completes for each server.
+  mcpRegistry.connectAll(process.cwd()).catch((err) => {
+    console.warn(`mcp connectAll failed: ${err instanceof Error ? err.message : String(err)}`);
+  });
 
   // Pre-load recent sessions BEFORE rendering so the splash renders once at
   // its final height. If we waited for a useEffect inside Splash, the initial

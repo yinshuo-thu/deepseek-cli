@@ -15,7 +15,10 @@
     "test:smoke": "tsx scripts/smoke.ts",
     "smoke:proxy": "tsx scripts/smoke-proxy.ts",
     "smoke:pow": "tsx scripts/smoke-pow.ts",
-    "smoke:agents": "tsx scripts/smoke-agents.ts"
+    "smoke:agents": "tsx scripts/smoke-agents.ts",
+    "smoke:hooks": "tsx scripts/smoke-hooks.ts",
+    "smoke:skills": "tsx scripts/smoke-skills.ts",
+    "smoke:mcp": "tsx scripts/smoke-mcp.ts"
   },
   "files": [
     "bin",

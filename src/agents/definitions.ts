@@ -6,6 +6,7 @@ import { existsSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ModelId, PermissionMode } from '../config/index.js';
 import { BUILTIN_AGENTS } from './builtins.js';
+import { parseFrontmatter as parseFM } from '../utils/frontmatter.js';
 
 export interface AgentDefinition {
   name: string;
@@ -44,39 +45,10 @@ export function projectAgentsDir(cwd: string): string {
  * Quoted strings (single or double) are unwrapped. Booleans/numbers are kept as strings.
  */
 export function parseFrontmatter(raw: string, filePath: string): AgentDefinition | null {
-  const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
-  if (!m) return null;
-  const head = m[1] ?? '';
-  const body = (m[2] ?? '').trim();
-
-  const obj: Record<string, string | string[]> = {};
-  const lines = head.split(/\r?\n/);
-  let i = 0;
-  while (i < lines.length) {
-    const line = lines[i] ?? '';
-    if (!line.trim() || line.trim().startsWith('#')) { i++; continue; }
-    const kv = line.match(/^([A-Za-z_][\w-]*)\s*:\s*(.*)$/);
-    if (!kv) { i++; continue; }
-    const key = kv[1]!;
-    const rest = (kv[2] ?? '').trim();
-    if (rest === '') {
-      // Possible YAML list on subsequent indented lines.
-      const items: string[] = [];
-      let j = i + 1;
-      while (j < lines.length) {
-        const ln = lines[j] ?? '';
-        const li = ln.match(/^\s+-\s+(.+)$/);
-        if (!li) break;
-        items.push(unquote(li[1]!.trim()));
-        j++;
-      }
-      obj[key] = items;
-      i = j;
-    } else {
-      obj[key] = unquote(rest);
-      i++;
-    }
-  }
+  const parsed = parseFM(raw);
+  if (!parsed) return null;
+  const obj = parsed.data;
+  const body = parsed.body;
 
   const name = String(obj.name ?? '').trim();
   if (!name) return null;
@@ -102,13 +74,6 @@ export function parseFrontmatter(raw: string, filePath: string): AgentDefinition
     source: 'project',
     filePath,
   };
-}
-
-function unquote(s: string): string {
-  if ((s.startsWith('"') && s.endsWith('"')) || (s.startsWith("'") && s.endsWith("'"))) {
-    return s.slice(1, -1);
-  }
-  return s;
 }
 
 async function loadProjectAgents(cwd: string): Promise<{ defs: AgentDefinition[]; mtimes: Map<string, number> }> {
