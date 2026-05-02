@@ -7,6 +7,10 @@ export const CONFIG_DIR = join(homedir(), '.deepseek');
 export const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 export const PROJECTS_DIR = join(CONFIG_DIR, 'projects');
 
+/** Subagent fork-bomb / runaway guards. */
+export const MAX_AGENT_DEPTH = 5;
+export const MAX_CONCURRENT_AGENTS = 8;
+
 export type ModelId = 'deepseek-v4-flash' | 'deepseek-v4-pro';
 
 /**

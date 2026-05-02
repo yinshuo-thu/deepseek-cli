@@ -76,7 +76,7 @@ export const ApplyPatchTool: Tool = {
       else {
         await fs.mkdir(dirname(w.path), { recursive: true });
         await fs.writeFile(w.path, w.next, 'utf8');
-        markRead(w.path);
+        markRead(w.path, ctx);
       }
     }
     return { ok: true, content: `applied ${writes.length} file change${writes.length === 1 ? '' : 's'}:\n  ${summary}` };

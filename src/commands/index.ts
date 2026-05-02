@@ -15,7 +15,10 @@ export type SlashAction =
   | { type: 'compact' }
   | { type: 'auth-login' }
   | { type: 'auth-logout' }
-  | { type: 'auth-whoami' };
+  | { type: 'auth-whoami' }
+  | { type: 'agents-list' }
+  | { type: 'agents-reload' }
+  | { type: 'agents-create' };
 
 export interface SlashContext {
   config: Config;
@@ -136,6 +139,16 @@ const COMMANDS: SlashSpec[] = [
     name: '/whoami',
     summary: 'Show current authentication source.',
     handler: () => ({ type: 'auth-whoami' }),
+  },
+  {
+    name: '/agents',
+    summary: 'List subagents. `/agents reload` rescans, `/agents create` writes a new one.',
+    handler: (rest) => {
+      const sub = rest.trim().toLowerCase();
+      if (sub === 'reload') return { type: 'agents-reload' };
+      if (sub === 'create') return { type: 'agents-create' };
+      return { type: 'agents-list' };
+    },
   },
 ];
 

@@ -13,10 +13,12 @@ import { palette } from './ui/theme.js';
 
 import { DeepSeekClient } from './api/client.js';
 import { runAgentLoop } from './agents/loop.js';
+import { configureSpawn } from './agents/spawn.js';
 import { dispatch as dispatchSlash, commandNames } from './commands/index.js';
 import { Session, loadSession, type SessionMeta } from './session/history.js';
 import { saveConfig, type Config, type ModelId, type PermissionMode, type ReasoningEffort, CONFIG_FILE } from './config/index.js';
 import { loginFlow, logoutFlow, stopActiveProxy, whoamiFlow } from './commands/login.js';
+import { listAgentsMarkdown, reloadAgentsMarkdown, writeAgentFile, defaultDraft } from './commands/agents.js';
 
 const SYSTEM_PROMPT = `You are DeepSeek-CLI, a terminal-native coding agent powered by the DeepSeek V4 model family.
 
@@ -66,6 +68,7 @@ export function App({ config: initialConfig, version, initialRecentSessions }: P
   // Refresh client when config changes (model swap, etc.)
   useEffect(() => {
     clientRef.current = new DeepSeekClient(config);
+    configureSpawn({ config, client: clientRef.current, cwd: process.cwd() });
   }, [config]);
 
   // Esc cancels stream; double Ctrl+C exits; Tab cycles modes; Shift+Tab cycles reasoning.
@@ -268,6 +271,30 @@ export function App({ config: initialConfig, version, initialRecentSessions }: P
               role: 'system',
               content: r.message,
             });
+            return;
+          }
+          case 'agents-list': {
+            const md = await listAgentsMarkdown(process.cwd());
+            pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: md });
+            return;
+          }
+          case 'agents-reload': {
+            const md = await reloadAgentsMarkdown(process.cwd());
+            pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: md });
+            return;
+          }
+          case 'agents-create': {
+            // Minimal flow: write a stub <name>.md the user can fill in.
+            // The model-driven generator is left as future polish; we do not
+            // call the API here to keep the slash command synchronous and
+            // testable. Users can also create the file by hand.
+            const name = `custom-${Date.now().toString(36)}`;
+            try {
+              const fp = await writeAgentFile(process.cwd(), defaultDraft(name, 'TODO: describe this agent.'));
+              pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: `Created stub agent at \`${fp}\`. Edit it, then run \`/agents reload\`.` });
+            } catch (e) {
+              pushMsg({ id: `err-${Date.now()}`, role: 'system', content: `error: ${(e as Error).message}` });
+            }
             return;
           }
           case 'noop':

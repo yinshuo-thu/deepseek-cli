@@ -3,10 +3,10 @@
 // Owned by App.tsx via a callbacks bag. We emit fine-grained events so the UI
 // can render tokens as they arrive, show tool cards, and request permissions.
 
-import type { ChatMessage } from '../api/types.js';
+import type { ChatMessage, ToolDefinition } from '../api/types.js';
 import { DeepSeekClient, estimateCostUSD } from '../api/client.js';
 import { toolsForMode, toolByName, markRead } from '../tools/index.js';
-import type { ToolContext } from '../tools/types.js';
+import type { Tool, ToolContext, AgentRuntime } from '../tools/types.js';
 import type { PermissionMode } from '../config/index.js';
 
 export interface LoopCallbacks {
@@ -39,14 +39,30 @@ export async function runAgentLoop(args: {
   cb: LoopCallbacks;
   mode: PermissionMode;
   maxTurns?: number;
+  /** Subset of tools available to this loop; defaults to mode-filter over ALL_TOOLS. */
+  availableTools?: Tool[];
+  /** Optional fields for subagent runs. */
+  agentId?: string;
+  parentId?: string;
+  depth?: number;
+  agentRuntime?: AgentRuntime;
+  /** Called after every appended message — used for per-message JSONL flushing. */
+  onMessageAppended?: (msg: ChatMessage) => void | Promise<void>;
 }): Promise<void> {
   const { client, messages, cwd, model, signal, cb, mode } = args;
   const maxTurns = args.maxTurns ?? 25;
   const persistentlyAllowed = new Set<string>(); // tools allowed for the rest of the turn-chain
+  const readFiles = new Set<string>();
 
   const ctx: ToolContext = {
     cwd,
     log: cb.log,
+    readFiles,
+    agentId: args.agentId,
+    parentId: args.parentId,
+    depth: args.depth ?? 0,
+    agentRuntime: args.agentRuntime,
+    signal,
     async requestPermission(tool, summary) {
       if (mode === 'yolo') return 'once';                         // yolo: never ask
       if (persistentlyAllowed.has(tool)) return 'once';
@@ -56,8 +72,17 @@ export async function runAgentLoop(args: {
     },
   };
 
-  // Tool surface narrows in plan mode (read-only).
-  const tools = toolsForMode(mode).map((t) => t.definition);
+  const flush = async (m: ChatMessage) => {
+    if (args.onMessageAppended) {
+      try { await args.onMessageAppended(m); } catch { /* best-effort */ }
+    }
+  };
+
+  // Tool surface: prefer caller-supplied list (subagent), else mode-filter.
+  const toolList: Tool[] = args.availableTools ?? toolsForMode(mode);
+  const tools: ToolDefinition[] = toolList.map((t) => t.definition);
+  const localToolByName = (name: string): Tool | undefined =>
+    toolList.find((t) => t.definition.function.name === name) ?? toolByName(name);
 
   for (let turn = 0; turn < maxTurns; turn++) {
     if (signal.aborted) { cb.onError('aborted'); return; }
@@ -130,6 +155,7 @@ export async function runAgentLoop(args: {
         : {}),
     };
     messages.push(assistantMsg);
+    await flush(assistantMsg);
 
     // No tools requested → terminate.
     if (toolCalls.length === 0) {
@@ -145,7 +171,7 @@ export async function runAgentLoop(args: {
       catch { /* fall through; tool will report error */ }
       cb.onToolCallReady(call.id, call.name, parsed);
 
-      const tool = toolByName(call.name);
+      const tool = localToolByName(call.name);
       let result: { ok: boolean; content: string };
       if (!tool) {
         result = { ok: false, content: `Unknown tool: ${call.name}` };
@@ -154,7 +180,10 @@ export async function runAgentLoop(args: {
           const r = await tool.run(parsed, ctx);
           // Read tool: track the file path so subsequent Write/Edit are allowed.
           if (r.ok && tool.definition.function.name === 'Read' && parsed?.file_path) {
-            markRead(String(parsed.file_path));
+            const { isAbsolute, resolve } = await import('node:path');
+            const p = String(parsed.file_path);
+            const abs = isAbsolute(p) ? p : resolve(cwd, p);
+            markRead(abs, ctx);
           }
           result = { ok: r.ok, content: r.content };
         } catch (e) {
@@ -162,12 +191,14 @@ export async function runAgentLoop(args: {
         }
       }
       cb.onToolResult(call.id, call.name, result.ok, summariseResult(result.content));
-      messages.push({
+      const toolMsg: ChatMessage = {
         role: 'tool',
         tool_call_id: call.id,
         name: call.name,
         content: result.content,
-      });
+      };
+      messages.push(toolMsg);
+      await flush(toolMsg);
     }
 
     // Loop: feed tool results back to the model for follow-up.

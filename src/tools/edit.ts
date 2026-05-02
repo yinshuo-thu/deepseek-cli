@@ -48,7 +48,7 @@ export const EditTool: Tool = {
     const next = replaceAll ? raw.split(oldStr).join(newStr) : raw.replace(oldStr, newStr);
     try {
       await fs.writeFile(abs, next, 'utf8');
-      markRead(abs);
+      markRead(abs, ctx);
       return {
         ok: true,
         content: `Edited ${abs}: replaced ${occurrences} occurrence${occurrences > 1 ? 's' : ''}.`,
