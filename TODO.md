@@ -18,63 +18,72 @@ Last updated: 2026-05-02
 - [x] `.gitignore`
 - [x] `bin/deepseek.js` (dev↔dist auto-switch shim)
 - [x] Source directory layout (`src/{api,tools,commands,ui,config,session,utils,agents}`)
-- [ ] `npm install` succeeds, `npm run typecheck` clean
+- [x] `npm install` succeeds, `npm run typecheck` clean
 
 ### Config & first-run
-- [ ] `~/.deepseek/config.json` schema (apiKey, baseUrl, model, theme, telemetry)
-- [ ] First-run wizard: prompts for API key, validates with a 1-token call
-- [ ] `DEEPSEEK_API_KEY` env var override
-- [ ] `--api-key` / `--base-url` CLI flags
-- [ ] Config redaction in logs
+- [x] `~/.deepseek/config.json` schema (apiKey, baseUrl, model, theme, telemetry, apiFlavor)
+- [x] First-run wizard: prompts for API key
+- [x] `DEEPSEEK_API_KEY` env var override
+- [x] `--api-key` / `--base-url` / `--model` CLI flags
+- [x] API-key redacted in default logs (`redact()` helper)
+- [ ] Validate key with a 1-token ping during wizard
 
 ### DeepSeek API client
-- [ ] OpenAI-compatible streaming client (`POST /chat/completions`, SSE)
+- [x] OpenAI-compatible streaming client (`POST /chat/completions`, SSE)
+- [x] Tool-call (function-calling) request/response shapes
+- [x] Token-usage extraction + cost calculation (v4-flash & v4-pro pricing)
+- [x] Cancellation via `AbortController` (Ctrl-C / Esc)
 - [ ] Anthropic-compatible client (`POST /anthropic/v1/messages`) — fallback path
-- [ ] Tool-call (function-calling) request/response shapes
-- [ ] Token-usage extraction + cost calculation (v4-flash & v4-pro pricing)
 - [ ] Request retry w/ exponential backoff on 429/5xx
-- [ ] Cancellation via `AbortController` (Ctrl-C / Esc)
 
 ### TUI (Ink + React)
-- [ ] Splash screen — DeepSeek whale ASCII art, version, model
-- [ ] Bottom input box (`>`-prompt, multi-line on Shift-Enter, Ctrl-C cancel)
-- [ ] Streaming message bubble — assistant tokens render as they arrive
-- [ ] Markdown renderer (headings, lists, **bold**, *italic*, `inline`)
-- [ ] Syntax-highlighted code blocks (`cli-highlight`)
-- [ ] Tool-call cards — collapsed by default, expandable on selection
-- [ ] Status bar — model, cwd, tokens-used, est. cost
-- [ ] Theme system w/ DeepSeek-blue palette + light/dark variants
-- [ ] Spinner during reasoning
-- [ ] Resize-aware layout
+- [x] Splash screen — DeepSeek whale ASCII art, version, model
+- [x] Bottom input box (`>`-prompt, Ctrl-C cancel)
+- [x] Streaming message bubble — assistant tokens render as they arrive
+- [x] Markdown renderer (headings, lists, **bold**, *italic*, `inline`)
+- [x] Syntax-highlighted code blocks (`cli-highlight`)
+- [x] Tool-call cards — pending / ok / err glyphs + arg preview
+- [x] Status bar — model, cwd, tokens-used, est. cost
+- [x] Theme system w/ DeepSeek-blue palette
+- [x] Spinner during reasoning + tool calls
+- [ ] Multi-line input on Shift-Enter
+- [ ] Light theme variant
+- [ ] Resize-aware reflow
 
 ### Tools
-- [ ] `Read` — read file (line range, image-aware)
-- [ ] `Write` — write file (must read first if exists)
-- [ ] `Edit` — exact-string replacement (unique-match guard)
-- [ ] `Bash` — exec with stream + 2-min timeout default
-- [ ] Permission prompt (allow once / always / deny)
+- [x] `Read` — read file (line range)
+- [x] `Write` — write file (must read first if exists)
+- [x] `Edit` — exact-string replacement (unique-match guard)
+- [x] `Bash` — exec with stream + 2-min timeout default
+- [x] `Glob` — glob match with mtime sort
+- [x] `Grep` — ripgrep w/ JS fallback
+- [x] Permission prompt (allow once / always / deny)
 - [ ] Permission persistence per project (`~/.deepseek/projects/<hash>/permissions.json`)
+- [ ] Image read in `Read` tool
 
 ### Slash commands
-- [ ] `/help` — list commands
-- [ ] `/clear` — clear conversation
-- [ ] `/model` — switch model (interactive picker)
-- [ ] `/exit` `/quit` — graceful shutdown
-- [ ] `/config` — open config in $EDITOR
-- [ ] `/cost` — show session cost breakdown
-- [ ] `/cwd` — show working directory
+- [x] `/help` — list commands
+- [x] `/clear` — clear conversation
+- [x] `/model` — switch model
+- [x] `/exit` `/quit` — graceful shutdown
+- [x] `/config` — open config in $EDITOR
+- [x] `/cost` — show session cost breakdown
+- [x] `/cwd` — show working directory
+- [x] `/resume` — interactive session picker
+- [ ] `/compact` — summarise + truncate when context fills (M3)
 
 ### Conversation history
-- [ ] In-memory message log
-- [ ] Persistence to `~/.deepseek/projects/<cwd-hash>/sessions/<id>.jsonl`
-- [ ] `/resume` picker (most recent N sessions)
-- [ ] `/compact` — summarise + truncate when context fills
+- [x] In-memory message log
+- [x] Persistence to `~/.deepseek/projects/<cwd-hash>/sessions/<id>.jsonl`
+- [x] `/resume` picker (most recent 15 sessions)
+- [x] Per-session meta JSON (firstUserPrompt, message count, timestamps)
+- [ ] `/compact` summarisation (M3)
 
-### Distribution
-- [ ] `README.md` — install, quickstart, screenshot placeholder
-- [ ] `install.sh` (bash one-liner mirror of Claude's pattern)
-- [ ] `LICENSE` (MIT)
-- [ ] First push to `github.com/yinshuo-thu/deepseek-cli`
+### Distribution (M1 part — full distro is M5)
+- [x] `README.md` — install, quickstart, model table, comparison matrix
+- [x] `install.sh` (npm-based; binary fallback is M5)
+- [x] `LICENSE` (MIT)
+- [x] First push to `github.com/yinshuo-thu/deepseek-cli`
 
 ---
 

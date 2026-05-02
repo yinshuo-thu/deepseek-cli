@@ -8,12 +8,13 @@ import { MessageView } from './ui/Message.js';
 import type { UIMessage } from './ui/Message.js';
 import { StatusBar } from './ui/StatusBar.js';
 import { PermissionPrompt } from './ui/Permission.js';
+import { ResumePicker } from './ui/ResumePicker.js';
 import { palette } from './ui/theme.js';
 
 import { DeepSeekClient } from './api/client.js';
 import { runAgentLoop } from './agents/loop.js';
 import { dispatch as dispatchSlash, commandNames } from './commands/index.js';
-import { Session } from './session/history.js';
+import { Session, loadSession } from './session/history.js';
 import { saveConfig, type Config, type ModelId, CONFIG_FILE } from './config/index.js';
 
 const SYSTEM_PROMPT = `You are DeepSeek-CLI, a terminal-native coding agent powered by the DeepSeek V4 model family.
@@ -49,6 +50,7 @@ export function App({ config: initialConfig, version }: Props) {
   const [busy, setBusy] = useState(false);
   const [messages, setMessages] = useState<UIMessage[]>([]);
   const [pendingPerm, setPendingPerm] = useState<PendingPermission | null>(null);
+  const [pickingSession, setPickingSession] = useState(false);
   const [tokens, setTokens] = useState({ in: 0, out: 0, cost: 0 });
   const [, forceTick] = useState(0);
 
@@ -143,7 +145,7 @@ export function App({ config: initialConfig, version }: Props) {
             return;
           }
           case 'resume-picker':
-            pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: '/resume picker is coming in M3.' });
+            setPickingSession(true);
             return;
           case 'compact':
             pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: '/compact is coming in M3.' });
@@ -234,7 +236,37 @@ export function App({ config: initialConfig, version }: Props) {
         />
       )}
 
-      {!pendingPerm && (
+      {pickingSession && (
+        <ResumePicker
+          cwd={process.cwd()}
+          onPick={async (id) => {
+            setPickingSession(false);
+            if (!id) return;
+            const loaded = await loadSession(process.cwd(), id);
+            if (!loaded) {
+              pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: 'failed to load session.' });
+              return;
+            }
+            // Replace the in-memory Session and rehydrate UI from the persisted log.
+            const s = new Session(process.cwd(), config.model);
+            for (const m of loaded.messages) await s.append(m);
+            sessionRef.current = s;
+            const uiMsgs: UIMessage[] = loaded.messages
+              .filter((m) => m.role === 'user' || (m.role === 'assistant' && m.content))
+              .map((m, i) => ({
+                id: `r-${i}-${Date.now()}`,
+                role: m.role as 'user' | 'assistant',
+                content: typeof m.content === 'string' ? m.content : '',
+              }));
+            setMessages([
+              { id: `sys-${Date.now()}`, role: 'system', content: `Resumed session **${id}** (${loaded.messages.length} messages).` },
+              ...uiMsgs,
+            ]);
+          }}
+        />
+      )}
+
+      {!pendingPerm && !pickingSession && (
         <Box marginTop={1}>
           <Text color={palette.deepseekBlue}>{busy ? '⋯ ' : '› '}</Text>
           <TextInput

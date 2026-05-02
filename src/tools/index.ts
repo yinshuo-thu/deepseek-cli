@@ -3,8 +3,10 @@ import { ReadTool } from './read.js';
 import { WriteTool, markRead } from './write.js';
 import { EditTool } from './edit.js';
 import { BashTool } from './bash.js';
+import { GlobTool } from './glob.js';
+import { GrepTool } from './grep.js';
 
-export const ALL_TOOLS: Tool[] = [ReadTool, WriteTool, EditTool, BashTool];
+export const ALL_TOOLS: Tool[] = [ReadTool, WriteTool, EditTool, BashTool, GlobTool, GrepTool];
 
 export function toolByName(name: string): Tool | undefined {
   return ALL_TOOLS.find((t) => t.definition.function.name === name);

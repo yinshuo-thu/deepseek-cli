@@ -63,6 +63,24 @@ export class Session {
   }
 }
 
+export async function loadSession(cwd: string, id: string): Promise<{ meta: SessionMeta; messages: ChatMessage[] } | null> {
+  const dir = join(projectDir(cwd), 'sessions');
+  const jsonl = join(dir, `${id}.jsonl`);
+  const metaPath = join(dir, `${id}.meta.json`);
+  if (!existsSync(jsonl) || !existsSync(metaPath)) return null;
+  try {
+    const meta = JSON.parse(await fs.readFile(metaPath, 'utf8')) as SessionMeta;
+    const raw = await fs.readFile(jsonl, 'utf8');
+    const messages: ChatMessage[] = raw
+      .split('\n')
+      .filter(Boolean)
+      .map((ln) => JSON.parse(ln) as ChatMessage);
+    return { meta, messages };
+  } catch {
+    return null;
+  }
+}
+
 export async function listSessions(cwd: string, limit = 20): Promise<SessionMeta[]> {
   const dir = join(projectDir(cwd), 'sessions');
   if (!existsSync(dir)) return [];
