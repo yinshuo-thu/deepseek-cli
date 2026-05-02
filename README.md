@@ -1,25 +1,4 @@
-# DeepSeek-CLI
-
-<!-- The whale below renders in DeepSeek-blue (#4D6BFE) inside the TUI splash.
-     Markdown can't carry terminal colour, so this README shows it in plain ASCII. -->
-
-```
-                     .--:      =
-         :+***********=      =**-        -
-      .+**************+-     -****-.=++**=
-     =*******************+    =*********+.
-    =**********************=   .+*****+:
-   :*+.  .:++***********+****+. +***
-   +*=         -+******-.  +*******=
-   +*+           :*****==-  -******
-   :**=            -*****+:  +****-
-    +**=            .************=
-     +**=             =*********=
-      +**+-     =+=    :******+
-       .+***=.  -****:   -+****+:
-          =************++=-..-==-.
-             .==+++++==:
-```
+# 🐋 DeepSeek-CLI
 
 > A native, terminal-first coding agent for the **DeepSeek V4** model family — built to match the look-and-feel of Claude Code, command-for-command, while running entirely on your DeepSeek API key.
 
