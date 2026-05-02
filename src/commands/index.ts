@@ -1,0 +1,107 @@
+// Slash-command registry. The App calls dispatch() and reacts to the returned action.
+import type { Config, ModelId } from '../config/index.js';
+
+export type SlashAction =
+  | { type: 'noop'; message?: string }
+  | { type: 'message'; markdown: string }
+  | { type: 'clear' }
+  | { type: 'exit' }
+  | { type: 'set-model'; model: ModelId }
+  | { type: 'open-config' }
+  | { type: 'show-cost' }
+  | { type: 'resume-picker' }
+  | { type: 'compact' };
+
+export interface SlashContext {
+  config: Config;
+  cwd: string;
+}
+
+interface SlashSpec {
+  name: string;
+  aliases?: string[];
+  summary: string;
+  handler: (rest: string, ctx: SlashContext) => SlashAction;
+}
+
+const COMMANDS: SlashSpec[] = [
+  {
+    name: '/help',
+    summary: 'Show available slash commands.',
+    handler: () => ({ type: 'message', markdown: helpMarkdown() }),
+  },
+  {
+    name: '/clear',
+    summary: 'Clear the current conversation context.',
+    handler: () => ({ type: 'clear' }),
+  },
+  {
+    name: '/exit',
+    aliases: ['/quit'],
+    summary: 'Exit DeepSeek-CLI.',
+    handler: () => ({ type: 'exit' }),
+  },
+  {
+    name: '/model',
+    summary: 'Switch model. Usage: `/model deepseek-v4-flash` or `/model deepseek-v4-pro`.',
+    handler: (rest) => {
+      const m = rest.trim();
+      if (m === 'deepseek-v4-flash' || m === 'deepseek-v4-pro') {
+        return { type: 'set-model', model: m as ModelId };
+      }
+      return {
+        type: 'message',
+        markdown:
+          '**Usage:** `/model deepseek-v4-flash` or `/model deepseek-v4-pro`.\n\n' +
+          '- `deepseek-v4-flash` — fast, cheap, default for most tasks.\n' +
+          '- `deepseek-v4-pro` — strongest reasoning. Use for hard problems.',
+      };
+    },
+  },
+  {
+    name: '/config',
+    summary: 'Open ~/.deepseek/config.json in $EDITOR.',
+    handler: () => ({ type: 'open-config' }),
+  },
+  {
+    name: '/cost',
+    summary: 'Show estimated session cost & token usage.',
+    handler: () => ({ type: 'show-cost' }),
+  },
+  {
+    name: '/resume',
+    summary: 'Pick a previous session to resume.',
+    handler: () => ({ type: 'resume-picker' }),
+  },
+  {
+    name: '/compact',
+    summary: 'Summarise + truncate the conversation to free up context.',
+    handler: () => ({ type: 'compact' }),
+  },
+  {
+    name: '/cwd',
+    summary: 'Show the current working directory.',
+    handler: (_, ctx) => ({ type: 'message', markdown: '`' + ctx.cwd + '`' }),
+  },
+];
+
+export function dispatch(input: string, ctx: SlashContext): SlashAction | null {
+  const trimmed = input.trim();
+  if (!trimmed.startsWith('/')) return null;
+  const [head, ...rest] = trimmed.split(/\s+/);
+  const lower = head!.toLowerCase();
+  const match = COMMANDS.find(
+    (c) => c.name === lower || (c.aliases && c.aliases.includes(lower)),
+  );
+  if (!match) return { type: 'message', markdown: `Unknown command \`${head}\`. Try \`/help\`.` };
+  return match.handler(rest.join(' '), ctx);
+}
+
+function helpMarkdown(): string {
+  const rows = COMMANDS.map((c) => `- \`${c.name}\`${c.aliases ? ` (${c.aliases.join(', ')})` : ''} — ${c.summary}`);
+  return `**DeepSeek-CLI commands**\n\n${rows.join('\n')}\n\nPress **Esc** to cancel a streaming response. **Ctrl+C** twice to exit.`;
+}
+
+export function commandNames(): string[] {
+  return COMMANDS.flatMap((c) => [c.name, ...(c.aliases ?? [])]);
+}

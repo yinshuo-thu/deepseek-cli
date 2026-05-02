@@ -1,0 +1,19 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+.env
+.env.local
+
+# Reference clones — kept locally only
+/refs/
+../refs/
+
+# OS / editor
+.idea/
+.vscode/
+*.swp
+
+# Test artefacts
+coverage/
+.cache/
