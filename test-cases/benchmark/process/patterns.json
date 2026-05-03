@@ -1,0 +1,32 @@
+{
+  "coding": {
+    "required_tools": ["Read"],
+    "helpful_tools": ["Bash"],
+    "forbidden_tools": [],
+    "preferred_sequence": ["Read", "Edit|Write", "Bash"]
+  },
+  "debugging": {
+    "required_tools": ["Read"],
+    "helpful_tools": ["Bash"],
+    "forbidden_tools": [],
+    "preferred_sequence": ["Read", "Edit", "Bash"]
+  },
+  "bash_task": {
+    "required_tools": ["Bash"],
+    "helpful_tools": [],
+    "forbidden_tools": [],
+    "preferred_sequence": ["Bash"]
+  },
+  "analysis": {
+    "required_tools": [],
+    "helpful_tools": ["Read", "Bash"],
+    "forbidden_tools": [],
+    "preferred_sequence": []
+  },
+  "file_edit": {
+    "required_tools": ["Read", "Edit"],
+    "helpful_tools": ["Bash"],
+    "forbidden_tools": [],
+    "preferred_sequence": ["Read", "Edit"]
+  }
+}

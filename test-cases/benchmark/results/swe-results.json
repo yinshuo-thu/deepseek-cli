@@ -1,0 +1,111 @@
+{
+  "suite": "swebench",
+  "score": 0.8,
+  "results": [
+    {
+      "id": "SW-001",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 3,
+      "total_after": 3
+    },
+    {
+      "id": "SW-002",
+      "pass": false,
+      "baseline_confirmed": false,
+      "passed_after": 1,
+      "total_after": 2
+    },
+    {
+      "id": "SW-003",
+      "pass": false,
+      "baseline_confirmed": true,
+      "passed_after": 2,
+      "total_after": 5
+    },
+    {
+      "id": "SW-004",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 2,
+      "total_after": 2
+    },
+    {
+      "id": "SW-005",
+      "pass": true,
+      "baseline_confirmed": true,
+      "passed_after": 1,
+      "total_after": 1
+    },
+    {
+      "id": "SW-006",
+      "pass": true,
+      "baseline_confirmed": true,
+      "passed_after": 3,
+      "total_after": 3
+    },
+    {
+      "id": "SW-007",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 2,
+      "total_after": 2
+    },
+    {
+      "id": "SW-008",
+      "pass": true,
+      "baseline_confirmed": true,
+      "passed_after": 4,
+      "total_after": 4
+    },
+    {
+      "id": "SW-009",
+      "pass": true,
+      "baseline_confirmed": true,
+      "passed_after": 3,
+      "total_after": 3
+    },
+    {
+      "id": "SW-010",
+      "pass": false,
+      "baseline_confirmed": true,
+      "passed_after": 0,
+      "total_after": 2
+    },
+    {
+      "id": "SW-011",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 4,
+      "total_after": 4
+    },
+    {
+      "id": "SW-012",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 4,
+      "total_after": 4
+    },
+    {
+      "id": "SW-013",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 3,
+      "total_after": 3
+    },
+    {
+      "id": "SW-014",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 4,
+      "total_after": 4
+    },
+    {
+      "id": "SW-015",
+      "pass": true,
+      "baseline_confirmed": false,
+      "passed_after": 4,
+      "total_after": 4
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import React from 'react';
 import { render, Box, Text, useApp } from 'ink';
 import TextInput from 'ink-text-input';
 import yargs from 'yargs';
+import { AuthWizard, type AuthWizardResult } from './ui/AuthWizard.js';
 import { hideBin } from 'yargs/helpers';
 
 import { App } from './App.js';
@@ -61,17 +62,16 @@ async function main() {
     }
   }
 
-  // First-run wizard: no API key anywhere → ask interactively.
-  // Skip the wizard when we're on the deepseek-web flavor: the proxy is the
-  // auth source and any apiKey we have is just a placeholder.
+  // First-run wizard: no credentials configured → show auth method picker.
+  // Skip when already on deepseek-web flavor (proxy is the auth source).
   if (!config.apiKey && config.apiFlavor !== 'deepseek-web') {
-    const key = await firstRunWizard(config);
-    if (!key) {
-      console.error('No API key provided. Exiting.');
+    const patch = await firstRunWizard(config);
+    if (!patch) {
+      console.error('No credentials provided. Exiting.');
       process.exit(1);
     }
-    config.apiKey = key;
-    await saveConfig({ apiKey: key });
+    Object.assign(config, patch);
+    await saveConfig(patch);
   }
 
   // One-shot --print mode (handy for scripting; full TUI otherwise).
@@ -109,44 +109,37 @@ async function main() {
   await waitUntilExit();
 }
 
-async function firstRunWizard(config: Config): Promise<string | null> {
+// firstRunWizard: shown once when no credentials are configured.
+// Presents three auth methods; returns the selected config patch or null to abort.
+async function firstRunWizard(config: Config): Promise<Partial<Config> | null> {
   return new Promise((resolve) => {
-    const { unmount } = render(<Wizard config={config} onDone={(k) => { unmount(); resolve(k); }} />);
-  });
-}
-
-function Wizard({ config, onDone }: { config: Config; onDone: (key: string | null) => void }) {
-  const [val, setVal] = React.useState('');
-  const { exit } = useApp();
-  return (
-    <Box flexDirection="column" paddingX={1}>
-      <Text color={palette.deepseekBlue}>{WHALE_ART}</Text>
-      <Box marginLeft={2} flexDirection="column" marginBottom={1}>
-        <Text bold color={palette.deepseekBlue}>Welcome to DeepSeek-CLI</Text>
-        <Text color={palette.fgMuted}>
-          Get an API key from <Text color={palette.fg}>https://platform.deepseek.com/api_keys</Text>
-        </Text>
-        <Text color={palette.fgMuted}>
-          It will be stored at <Text color={palette.fg}>~/.deepseek/config.json</Text> (chmod 600).
-        </Text>
-      </Box>
-      <Box>
-        <Text color={palette.deepseekBlue}>API key › </Text>
-        <TextInput
-          value={val}
-          onChange={setVal}
-          mask="•"
-          onSubmit={(v) => {
-            const k = v.trim();
-            if (!k) { onDone(null); exit(); return; }
-            onDone(k);
-            exit();
+    let settled = false;
+    const { unmount } = render(
+      <Box flexDirection="column" paddingX={1} paddingY={0}>
+        <Box marginBottom={1}>
+          <Text color={palette.deepseekBlue}>{WHALE_ART}</Text>
+        </Box>
+        <Box marginBottom={1} marginLeft={2}>
+          <Text bold color={palette.deepseekBlue}>Welcome to DeepSeek-CLI</Text>
+        </Box>
+        <AuthWizard
+          onDone={(result: AuthWizardResult) => {
+            if (settled) return;
+            settled = true;
+            unmount();
+            if (result.type === 'cancel') { resolve(null); return; }
+            if (result.type === 'api-key') {
+              resolve({ apiKey: result.apiKey, baseUrl: 'https://api.deepseek.com', apiFlavor: 'openai' });
+            } else if (result.type === 'browser') {
+              resolve({ apiFlavor: 'deepseek-web', baseUrl: result.proxyUrl });
+            } else if (result.type === 'custom') {
+              resolve({ baseUrl: result.baseUrl, apiKey: result.apiKey || undefined, apiFlavor: 'openai' });
+            }
           }}
-          placeholder="sk-…"
         />
-      </Box>
-    </Box>
-  );
+      </Box>,
+    );
+  });
 }
 
 async function printOnce(config: Config, prompt: string) {

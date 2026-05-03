@@ -1,0 +1,186 @@
+{
+  "suite": "humaneval",
+  "score": 0.9,
+  "results": [
+    {
+      "id": "HE-001",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-002",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-003",
+      "pass": false,
+      "passed_tests": 1,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-004",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-005",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-006",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-007",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-008",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-009",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-010",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-011",
+      "pass": false,
+      "passed_tests": 1,
+      "total_tests": 3
+    },
+    {
+      "id": "HE-012",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-013",
+      "pass": true,
+      "passed_tests": 3,
+      "total_tests": 3
+    },
+    {
+      "id": "HE-014",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-015",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-016",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-017",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "HE-018",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-019",
+      "pass": true,
+      "passed_tests": 3,
+      "total_tests": 3
+    },
+    {
+      "id": "HE-020",
+      "pass": false,
+      "passed_tests": 0,
+      "total_tests": 1
+    },
+    {
+      "id": "HE-021",
+      "pass": true,
+      "passed_tests": 4,
+      "total_tests": 4
+    },
+    {
+      "id": "HE-022",
+      "pass": true,
+      "passed_tests": 5,
+      "total_tests": 5
+    },
+    {
+      "id": "HE-023",
+      "pass": true,
+      "passed_tests": 4,
+      "total_tests": 4
+    },
+    {
+      "id": "HE-024",
+      "pass": true,
+      "passed_tests": 3,
+      "total_tests": 3
+    },
+    {
+      "id": "HE-025",
+      "pass": true,
+      "passed_tests": 4,
+      "total_tests": 4
+    },
+    {
+      "id": "HE-026",
+      "pass": true,
+      "passed_tests": 3,
+      "total_tests": 3
+    },
+    {
+      "id": "HE-027",
+      "pass": true,
+      "passed_tests": 3,
+      "total_tests": 3
+    },
+    {
+      "id": "HE-028",
+      "pass": true,
+      "passed_tests": 4,
+      "total_tests": 4
+    },
+    {
+      "id": "HE-029",
+      "pass": true,
+      "passed_tests": 5,
+      "total_tests": 5
+    },
+    {
+      "id": "HE-030",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    }
+  ]
+}

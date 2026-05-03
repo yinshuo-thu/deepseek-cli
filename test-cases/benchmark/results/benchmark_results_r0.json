@@ -1,0 +1,20 @@
+{
+  "round": 0,
+  "timestamp": "2026-05-02T18:27:13.652Z",
+  "scores": {
+    "humaneval": 0,
+    "mbpp": 0,
+    "bashbench": 0,
+    "swebench": 0,
+    "process": 0,
+    "output_weighted": 0,
+    "overall": 0
+  },
+  "raw": {
+    "he": null,
+    "mbpp": null,
+    "bash": null,
+    "swe": null,
+    "proc": null
+  }
+}

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "BB-001",
+    "prompt": "Count the number of lines in a file named test.txt",
+    "setup_script": "mkdir -p \"$TMPDIR\" && printf 'line1\\nline2\\nline3\\nline4\\nline5\\n' > \"$TMPDIR/test.txt\"",
+    "command_hint": "wc -l test.txt",
+    "expected_output": "5",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-002",
+    "prompt": "Find all .json files in the current directory recursively",
+    "setup_script": "mkdir -p \"$TMPDIR/sub1\" \"$TMPDIR/sub2\" && touch \"$TMPDIR/sub1/a.json\" \"$TMPDIR/sub2/b.json\" \"$TMPDIR/c.json\"",
+    "command_hint": "find . -name '*.json'",
+    "expected_output": ".json",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-003",
+    "prompt": "Show the last 3 lines of a file named data.txt",
+    "setup_script": "printf 'line1\\nline2\\nline3\\nline4\\nline5\\nline6\\n' > \"$TMPDIR/data.txt\"",
+    "command_hint": "tail -n 3 data.txt",
+    "expected_output": "line4\nline5\nline6",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-004",
+    "prompt": "Count words in a file named words.txt",
+    "setup_script": "printf 'hello world foo bar\\n' > \"$TMPDIR/words.txt\"",
+    "command_hint": "wc -w words.txt",
+    "expected_output": "4",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-005",
+    "prompt": "Find files larger than 1KB in the current directory",
+    "setup_script": "printf 'small' > \"$TMPDIR/small.txt\" && dd if=/dev/zero bs=2048 count=1 2>/dev/null > \"$TMPDIR/large.bin\"",
+    "command_hint": "find . -size +1k",
+    "expected_output": "large.bin",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-006",
+    "prompt": "Sort lines in a file named unsorted.txt alphabetically and display the result",
+    "setup_script": "printf 'banana\\napple\\ncherry\\n' > \"$TMPDIR/unsorted.txt\"",
+    "command_hint": "sort unsorted.txt",
+    "expected_output": "apple\nbanana\ncherry",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-007",
+    "prompt": "Find and replace the word 'foo' with 'bar' in a file named replace.txt using sed and print to stdout",
+    "setup_script": "printf 'foo is here\\nfoo again\\n' > \"$TMPDIR/replace.txt\"",
+    "command_hint": "sed 's/foo/bar/g' replace.txt",
+    "expected_output": "bar",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-008",
+    "prompt": "Show unique lines in a file named dupes.txt (removing duplicate lines)",
+    "setup_script": "printf 'alpha\\nbeta\\nalpha\\ngamma\\nbeta\\n' > \"$TMPDIR/dupes.txt\"",
+    "command_hint": "sort -u dupes.txt",
+    "expected_output": "alpha\nbeta\ngamma",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-009",
+    "prompt": "Extract the second column from a CSV file named data.csv (comma-separated)",
+    "setup_script": "printf 'a,b,c\\n1,2,3\\nx,y,z\\n' > \"$TMPDIR/data.csv\"",
+    "command_hint": "cut -d, -f2 data.csv",
+    "expected_output": "b\n2\ny",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-010",
+    "prompt": "Count the number of files in the current directory (non-recursively)",
+    "setup_script": "touch \"$TMPDIR/f1.txt\" \"$TMPDIR/f2.txt\" \"$TMPDIR/f3.txt\" \"$TMPDIR/f4.txt\"",
+    "command_hint": "ls -1 | wc -l",
+    "expected_output": "4",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-011",
+    "prompt": "Find files modified in the last 7 days in the current directory",
+    "setup_script": "touch \"$TMPDIR/recent.txt\"",
+    "command_hint": "find . -mtime -7",
+    "expected_output": "recent.txt",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-012",
+    "prompt": "Display file size of report.txt in human-readable format",
+    "setup_script": "dd if=/dev/zero bs=1024 count=2 2>/dev/null > \"$TMPDIR/report.txt\"",
+    "command_hint": "ls -lh report.txt",
+    "expected_output": "K",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-013",
+    "prompt": "Reverse the lines in a file named lines.txt and print the result",
+    "setup_script": "printf 'first\\nsecond\\nthird\\n' > \"$TMPDIR/lines.txt\"",
+    "command_hint": "tac lines.txt  # Linux; use tail -r lines.txt on macOS",
+    "expected_output": "third\nsecond\nfirst",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-014",
+    "prompt": "Find lines containing the word 'error' in a file named log.txt",
+    "setup_script": "printf 'info: ok\\nerror: failed\\nwarning: slow\\nerror: crash\\n' > \"$TMPDIR/log.txt\"",
+    "command_hint": "grep 'error' log.txt",
+    "expected_output": "error",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-015",
+    "prompt": "Concatenate two files (file1.txt and file2.txt) and print the combined content",
+    "setup_script": "printf 'hello\\n' > \"$TMPDIR/file1.txt\" && printf 'world\\n' > \"$TMPDIR/file2.txt\"",
+    "command_hint": "cat file1.txt file2.txt",
+    "expected_output": "hello\nworld",
+    "match_mode": "contains"
+  },
+  {
+    "id": "BB-016",
+    "prompt": "Count the number of lines in a file named data.txt",
+    "setup_script": "printf \"line1\nline2\nline3\nline4\nline5\n\" > data.txt",
+    "expected_output": "5",
+    "match_mode": "contains",
+    "command_hint": "wc -l data.txt"
+  },
+  {
+    "id": "BB-017",
+    "prompt": "Find all .log files in the current directory (non-recursive)",
+    "setup_script": "touch app.log error.log debug.log notes.txt",
+    "expected_output": "app.log\ndebug.log\nerror.log",
+    "match_mode": "contains",
+    "command_hint": "ls *.log | sort"
+  },
+  {
+    "id": "BB-018",
+    "prompt": "Print the current working directory",
+    "setup_script": "",
+    "expected_output": "/tmp",
+    "match_mode": "contains",
+    "command_hint": "pwd"
+  },
+  {
+    "id": "BB-019",
+    "prompt": "Show only the first 3 lines of a file named input.txt",
+    "setup_script": "printf \"a\nb\nc\nd\ne\n\" > input.txt",
+    "expected_output": "a\nb\nc",
+    "match_mode": "exact",
+    "command_hint": "head -3 input.txt"
+  },
+  {
+    "id": "BB-020",
+    "prompt": "Replace all occurrences of \"foo\" with \"bar\" in file test.txt and print to stdout (do not modify file)",
+    "setup_script": "echo \"foo is foo\" > test.txt",
+    "expected_output": "bar is bar",
+    "match_mode": "exact",
+    "command_hint": "sed \"s/foo/bar/g\" test.txt"
+  }
+]

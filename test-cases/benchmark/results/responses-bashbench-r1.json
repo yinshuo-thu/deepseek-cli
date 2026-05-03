@@ -1,0 +1,22 @@
+{
+  "BB-001": "```bash\nwc -l < test.txt\n```",
+  "BB-002": "```bash\nfind . -type f -name \"*.json\"\n```",
+  "BB-003": "```bash\ntail -n 3 data.txt\n```",
+  "BB-004": "```bash\nwc -w words.txt\n```",
+  "BB-005": "```bash\nfind . -maxdepth 1 -type f -size +1k\n```",
+  "BB-006": "```bash\nsort unsorted.txt\n```",
+  "BB-007": "```bash\nsed 's/foo/bar/g' replace.txt\n```",
+  "BB-008": "```bash\nsort dupes.txt | uniq\n```",
+  "BB-009": "```bash\ncut -d',' -f2 data.csv\n```",
+  "BB-010": "```bash\nls -1 | wc -l\n```",
+  "BB-011": "```bash\nfind . -type f -mtime -7\n```",
+  "BB-012": "```bash\nls -lh report.txt | awk '{print $5}'\n```",
+  "BB-013": "```bash\ntac lines.txt\n```",
+  "BB-014": "```bash\ngrep 'error' log.txt\n```",
+  "BB-015": "```bash\ncat file1.txt file2.txt\n```",
+  "BB-016": "```bash\nwc -l < data.txt\n```",
+  "BB-017": "```bash\nfind . -maxdepth 1 -name \"*.log\" -type f\n```",
+  "BB-018": "```bash\npwd\n```",
+  "BB-019": "```bash\nhead -n 3 input.txt\n```",
+  "BB-020": "```bash\nsed 's/foo/bar/g' test.txt\n```"
+}

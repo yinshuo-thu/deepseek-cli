@@ -1,0 +1,21 @@
+{
+  "model": "claude-sonnet-4-6",
+  "note": "Baseline scores estimated from Claude public benchmark data and our problem calibration. Update with real Claude API runs when available.",
+  "scores": {
+    "humaneval": 0.88,
+    "mbpp": 0.90,
+    "bashbench": 0.80,
+    "swebench": 0.60,
+    "process": 0.85,
+    "output_weighted": 0.814,
+    "overall": 0.825
+  },
+  "methodology": {
+    "humaneval": "Claude Sonnet 4.x scores ~88% on HumanEval (TypeScript variant calibrated -2% vs Python)",
+    "mbpp": "Claude Sonnet 4.x scores ~90% on MBPP-style basic problems",
+    "bashbench": "Estimated from terminal task benchmarks — strong bash generation",
+    "swebench": "Claude Sonnet 4.x SWE-bench Verified ~50-60% — using 60% for our simpler 10-task set",
+    "process": "Estimated — Claude uses Read before Edit, Bash for verification consistently"
+  },
+  "timestamp": "2026-05-03T00:00:00Z"
+}

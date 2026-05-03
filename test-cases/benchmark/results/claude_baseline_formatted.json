@@ -1,0 +1,13 @@
+{
+  "round": -1,
+  "timestamp": "2026-05-03T00:00:00Z",
+  "scores": {
+    "humaneval": 0.88,
+    "mbpp": 0.9,
+    "bashbench": 0.8,
+    "swebench": 0.6,
+    "process": 0.85,
+    "output_weighted": 0.814,
+    "overall": 0.825
+  }
+}

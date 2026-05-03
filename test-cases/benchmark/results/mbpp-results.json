@@ -1,0 +1,96 @@
+{
+  "suite": "mbpp",
+  "score": 1,
+  "results": [
+    {
+      "id": "MBPP-001",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "MBPP-002",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "MBPP-003",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "MBPP-004",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "MBPP-005",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "MBPP-006",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "MBPP-007",
+      "pass": true,
+      "passed_tests": 2,
+      "total_tests": 2
+    },
+    {
+      "id": "MBPP-008",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "MBPP-009",
+      "pass": true,
+      "passed_tests": 3,
+      "total_tests": 3
+    },
+    {
+      "id": "MBPP-010",
+      "pass": true,
+      "passed_tests": 1,
+      "total_tests": 1
+    },
+    {
+      "id": "MBPP-011",
+      "pass": true,
+      "passed_tests": 4,
+      "total_tests": 4
+    },
+    {
+      "id": "MBPP-012",
+      "pass": true,
+      "passed_tests": 3,
+      "total_tests": 3
+    },
+    {
+      "id": "MBPP-013",
+      "pass": true,
+      "passed_tests": 4,
+      "total_tests": 4
+    },
+    {
+      "id": "MBPP-014",
+      "pass": true,
+      "passed_tests": 5,
+      "total_tests": 5
+    },
+    {
+      "id": "MBPP-015",
+      "pass": true,
+      "passed_tests": 4,
+      "total_tests": 4
+    }
+  ]
+}

@@ -1,0 +1,536 @@
+{
+  "round": 1,
+  "timestamp": "2026-05-02T19:05:50.878Z",
+  "scores": {
+    "humaneval": 0.3,
+    "mbpp": 0.6666666666666666,
+    "bashbench": 0.85,
+    "swebench": 0.8,
+    "process": 0,
+    "output_weighted": 0.6174999999999999,
+    "overall": 0.4322499999999999
+  },
+  "raw": {
+    "he": {
+      "suite": "humaneval",
+      "score": 0.3,
+      "results": [
+        {
+          "id": "HE-001",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-002",
+          "pass": true,
+          "passed_tests": 1,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-003",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-004",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-005",
+          "pass": true,
+          "passed_tests": 1,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-006",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-007",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-008",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-009",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-010",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-011",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 3
+        },
+        {
+          "id": "HE-012",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-013",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 3
+        },
+        {
+          "id": "HE-014",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-015",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-016",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-017",
+          "pass": true,
+          "passed_tests": 2,
+          "total_tests": 2
+        },
+        {
+          "id": "HE-018",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1,
+          "error": "no response"
+        },
+        {
+          "id": "HE-019",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 3
+        },
+        {
+          "id": "HE-020",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "HE-021",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 4
+        },
+        {
+          "id": "HE-022",
+          "pass": true,
+          "passed_tests": 5,
+          "total_tests": 5
+        },
+        {
+          "id": "HE-023",
+          "pass": true,
+          "passed_tests": 4,
+          "total_tests": 4
+        },
+        {
+          "id": "HE-024",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 3
+        },
+        {
+          "id": "HE-025",
+          "pass": true,
+          "passed_tests": 4,
+          "total_tests": 4
+        },
+        {
+          "id": "HE-026",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 3
+        },
+        {
+          "id": "HE-027",
+          "pass": true,
+          "passed_tests": 3,
+          "total_tests": 3
+        },
+        {
+          "id": "HE-028",
+          "pass": true,
+          "passed_tests": 4,
+          "total_tests": 4
+        },
+        {
+          "id": "HE-029",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 5
+        },
+        {
+          "id": "HE-030",
+          "pass": true,
+          "passed_tests": 2,
+          "total_tests": 2
+        }
+      ]
+    },
+    "mbpp": {
+      "suite": "mbpp",
+      "score": 0.6666666666666666,
+      "results": [
+        {
+          "id": "MBPP-001",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 2
+        },
+        {
+          "id": "MBPP-002",
+          "pass": true,
+          "passed_tests": 2,
+          "total_tests": 2
+        },
+        {
+          "id": "MBPP-003",
+          "pass": true,
+          "passed_tests": 2,
+          "total_tests": 2
+        },
+        {
+          "id": "MBPP-004",
+          "pass": true,
+          "passed_tests": 1,
+          "total_tests": 1
+        },
+        {
+          "id": "MBPP-005",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "MBPP-006",
+          "pass": true,
+          "passed_tests": 1,
+          "total_tests": 1
+        },
+        {
+          "id": "MBPP-007",
+          "pass": true,
+          "passed_tests": 2,
+          "total_tests": 2
+        },
+        {
+          "id": "MBPP-008",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 1
+        },
+        {
+          "id": "MBPP-009",
+          "pass": true,
+          "passed_tests": 3,
+          "total_tests": 3
+        },
+        {
+          "id": "MBPP-010",
+          "pass": true,
+          "passed_tests": 1,
+          "total_tests": 1
+        },
+        {
+          "id": "MBPP-011",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 4
+        },
+        {
+          "id": "MBPP-012",
+          "pass": true,
+          "passed_tests": 3,
+          "total_tests": 3
+        },
+        {
+          "id": "MBPP-013",
+          "pass": true,
+          "passed_tests": 4,
+          "total_tests": 4
+        },
+        {
+          "id": "MBPP-014",
+          "pass": true,
+          "passed_tests": 5,
+          "total_tests": 5
+        },
+        {
+          "id": "MBPP-015",
+          "pass": false,
+          "passed_tests": 0,
+          "total_tests": 4
+        }
+      ]
+    },
+    "bash": {
+      "suite": "bashbench",
+      "score": 0.85,
+      "results": [
+        {
+          "id": "BB-001",
+          "pass": true,
+          "actual_output": "5",
+          "expected_output": "5"
+        },
+        {
+          "id": "BB-002",
+          "pass": true,
+          "actual_output": "./sub1/a.json\n./sub2/b.json\n./c.json",
+          "expected_output": ".json"
+        },
+        {
+          "id": "BB-003",
+          "pass": true,
+          "actual_output": "line4\nline5\nline6",
+          "expected_output": "line4\nline5\nline6"
+        },
+        {
+          "id": "BB-004",
+          "pass": true,
+          "actual_output": "4 words.txt",
+          "expected_output": "4"
+        },
+        {
+          "id": "BB-005",
+          "pass": true,
+          "actual_output": "./large.bin",
+          "expected_output": "large.bin"
+        },
+        {
+          "id": "BB-006",
+          "pass": true,
+          "actual_output": "apple\nbanana\ncherry",
+          "expected_output": "apple\nbanana\ncherry"
+        },
+        {
+          "id": "BB-007",
+          "pass": true,
+          "actual_output": "bar is here\nbar again",
+          "expected_output": "bar"
+        },
+        {
+          "id": "BB-008",
+          "pass": true,
+          "actual_output": "alpha\nbeta\ngamma",
+          "expected_output": "alpha\nbeta\ngamma"
+        },
+        {
+          "id": "BB-009",
+          "pass": true,
+          "actual_output": "b\n2\ny",
+          "expected_output": "b\n2\ny"
+        },
+        {
+          "id": "BB-010",
+          "pass": true,
+          "actual_output": "4",
+          "expected_output": "4"
+        },
+        {
+          "id": "BB-011",
+          "pass": true,
+          "actual_output": "./recent.txt",
+          "expected_output": "recent.txt"
+        },
+        {
+          "id": "BB-012",
+          "pass": true,
+          "actual_output": "2.0K",
+          "expected_output": "K"
+        },
+        {
+          "id": "BB-013",
+          "pass": false,
+          "actual_output": "",
+          "expected_output": "third\nsecond\nfirst"
+        },
+        {
+          "id": "BB-014",
+          "pass": true,
+          "actual_output": "error: failed\nerror: crash",
+          "expected_output": "error"
+        },
+        {
+          "id": "BB-015",
+          "pass": true,
+          "actual_output": "hello\nworld",
+          "expected_output": "hello\nworld"
+        },
+        {
+          "id": "BB-016",
+          "pass": true,
+          "actual_output": "5",
+          "expected_output": "5"
+        },
+        {
+          "id": "BB-017",
+          "pass": false,
+          "actual_output": "./error.log\n./debug.log\n./app.log",
+          "expected_output": "app.log\ndebug.log\nerror.log"
+        },
+        {
+          "id": "BB-018",
+          "pass": false,
+          "expected_output": "/tmp",
+          "error": "The argument 'file' cannot be empty. Received ''"
+        },
+        {
+          "id": "BB-019",
+          "pass": true,
+          "actual_output": "a\nb\nc",
+          "expected_output": "a\nb\nc"
+        },
+        {
+          "id": "BB-020",
+          "pass": true,
+          "actual_output": "bar is bar",
+          "expected_output": "bar is bar"
+        }
+      ]
+    },
+    "swe": {
+      "suite": "swebench",
+      "score": 0.8,
+      "results": [
+        {
+          "id": "SW-001",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 3,
+          "total_after": 3
+        },
+        {
+          "id": "SW-002",
+          "pass": false,
+          "baseline_confirmed": false,
+          "passed_after": 1,
+          "total_after": 2
+        },
+        {
+          "id": "SW-003",
+          "pass": false,
+          "baseline_confirmed": true,
+          "passed_after": 2,
+          "total_after": 5
+        },
+        {
+          "id": "SW-004",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 2,
+          "total_after": 2
+        },
+        {
+          "id": "SW-005",
+          "pass": true,
+          "baseline_confirmed": true,
+          "passed_after": 1,
+          "total_after": 1
+        },
+        {
+          "id": "SW-006",
+          "pass": true,
+          "baseline_confirmed": true,
+          "passed_after": 3,
+          "total_after": 3
+        },
+        {
+          "id": "SW-007",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 2,
+          "total_after": 2
+        },
+        {
+          "id": "SW-008",
+          "pass": true,
+          "baseline_confirmed": true,
+          "passed_after": 4,
+          "total_after": 4
+        },
+        {
+          "id": "SW-009",
+          "pass": true,
+          "baseline_confirmed": true,
+          "passed_after": 3,
+          "total_after": 3
+        },
+        {
+          "id": "SW-010",
+          "pass": false,
+          "baseline_confirmed": true,
+          "passed_after": 0,
+          "total_after": 2
+        },
+        {
+          "id": "SW-011",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 4,
+          "total_after": 4
+        },
+        {
+          "id": "SW-012",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 4,
+          "total_after": 4
+        },
+        {
+          "id": "SW-013",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 3,
+          "total_after": 3
+        },
+        {
+          "id": "SW-014",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 4,
+          "total_after": 4
+        },
+        {
+          "id": "SW-015",
+          "pass": true,
+          "baseline_confirmed": false,
+          "passed_after": 4,
+          "total_after": 4
+        }
+      ]
+    },
+    "proc": null
+  }
+}

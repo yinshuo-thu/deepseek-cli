@@ -1,0 +1,909 @@
+[
+  {
+    "id": "HE-001",
+    "prompt": "Check if any two numbers in a list are closer to each other than a given threshold.",
+    "function_signature": "function hasCloseElements(numbers: number[], threshold: number): boolean",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1.0,
+            2.0,
+            3.0
+          ],
+          0.5
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          [
+            1.0,
+            2.8,
+            3.0,
+            4.0,
+            5.0,
+            2.0
+          ],
+          0.3
+        ],
+        "expected": true
+      }
+    ],
+    "canonical_solution": "function hasCloseElements(numbers: number[], threshold: number): boolean {\n  for (let i = 0; i < numbers.length; i++) {\n    for (let j = i + 1; j < numbers.length; j++) {\n      if (Math.abs(numbers[i] - numbers[j]) < threshold) return true;\n    }\n  }\n  return false;\n}"
+  },
+  {
+    "id": "HE-002",
+    "prompt": "Separate paren groups from a string. Input string contains multiple groups of nested parentheses. Your goal is to separate those groups into separate strings and return a list of those. Separate groups are balanced (each open brace is properly closed) and not nested within each other. Ignore any spaces in the input string.",
+    "function_signature": "function separateParenGroups(s: string): string[]",
+    "test_cases": [
+      {
+        "input": [
+          "( ) (( )) (( )( ))"
+        ],
+        "expected": [
+          "()",
+          "(())",
+          "(()())"
+        ]
+      }
+    ],
+    "canonical_solution": "function separateParenGroups(s: string): string[] {\n  const result: string[] = [];\n  let current = '';\n  let depth = 0;\n  for (const ch of s) {\n    if (ch === ' ') continue;\n    current += ch;\n    if (ch === '(') depth++;\n    else if (ch === ')') {\n      depth--;\n      if (depth === 0) {\n        result.push(current);\n        current = '';\n      }\n    }\n  }\n  return result;\n}"
+  },
+  {
+    "id": "HE-003",
+    "prompt": "Given a positive floating point number, it can be decomposed into its integer part (largest integer smaller than given number) and decimals (leftover part always smaller than 1). Return the decimal part of the number.",
+    "function_signature": "function truncateNumber(number: number): number",
+    "test_cases": [
+      {
+        "input": [
+          3.5
+        ],
+        "expected": 0.5
+      },
+      {
+        "input": [
+          1.33
+        ],
+        "expected": 0.33
+      }
+    ],
+    "canonical_solution": "function truncateNumber(number: number): number {\n  return parseFloat((number % 1).toFixed(10));\n}"
+  },
+  {
+    "id": "HE-004",
+    "prompt": "You're given a list of deposit and withdrawal operations on a bank account that starts with zero balance. Your task is to detect if at any point the balance of account falls below zero, and at that point function should return true. Otherwise it should return false.",
+    "function_signature": "function belowZero(operations: number[]): boolean",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          [
+            1,
+            2,
+            -4,
+            5
+          ]
+        ],
+        "expected": true
+      }
+    ],
+    "canonical_solution": "function belowZero(operations: number[]): boolean {\n  let balance = 0;\n  for (const op of operations) {\n    balance += op;\n    if (balance < 0) return true;\n  }\n  return false;\n}"
+  },
+  {
+    "id": "HE-005",
+    "prompt": "For a given list of input numbers, calculate Mean Absolute Deviation around the mean of this dataset.",
+    "function_signature": "function meanAbsoluteDeviation(numbers: number[]): number",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ]
+        ],
+        "expected": 1.0
+      }
+    ],
+    "canonical_solution": "function meanAbsoluteDeviation(numbers: number[]): number {\n  const mean = numbers.reduce((a, b) => a + b, 0) / numbers.length;\n  return numbers.reduce((acc, n) => acc + Math.abs(n - mean), 0) / numbers.length;\n}"
+  },
+  {
+    "id": "HE-006",
+    "prompt": "Insert a number 'delimeter' between every two consecutive elements of the input list.",
+    "function_signature": "function intersperse(numbers: number[], delimeter: number): number[]",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3
+          ],
+          4
+        ],
+        "expected": [
+          1,
+          4,
+          2,
+          4,
+          3
+        ]
+      },
+      {
+        "input": [
+          [],
+          7
+        ],
+        "expected": []
+      }
+    ],
+    "canonical_solution": "function intersperse(numbers: number[], delimeter: number): number[] {\n  if (numbers.length === 0) return [];\n  const result: number[] = [];\n  for (let i = 0; i < numbers.length; i++) {\n    result.push(numbers[i]);\n    if (i < numbers.length - 1) result.push(delimeter);\n  }\n  return result;\n}"
+  },
+  {
+    "id": "HE-007",
+    "prompt": "Input to this function is a string represented multiple groups for nested parentheses separated by spaces. For each of the group, output the deepest level of nesting of parentheses. E.g. (()()) has maximum two levels of nesting while ((())) has three.",
+    "function_signature": "function parseNestedParens(paren_string: string): number[]",
+    "test_cases": [
+      {
+        "input": [
+          "(()()) ((())) () ((())()())"
+        ],
+        "expected": [
+          2,
+          3,
+          1,
+          3
+        ]
+      }
+    ],
+    "canonical_solution": "function parseNestedParens(paren_string: string): number[] {\n  return paren_string.split(' ').map(group => {\n    let max = 0, depth = 0;\n    for (const ch of group) {\n      if (ch === '(') { depth++; max = Math.max(max, depth); }\n      else if (ch === ')') depth--;\n    }\n    return max;\n  });\n}"
+  },
+  {
+    "id": "HE-008",
+    "prompt": "Filter an input list of strings only for ones that contain given substring.",
+    "function_signature": "function filterBySubstring(strings: string[], substring: string): string[]",
+    "test_cases": [
+      {
+        "input": [
+          [
+            "abc",
+            "bacd",
+            "cde",
+            "array"
+          ],
+          "a"
+        ],
+        "expected": [
+          "abc",
+          "bacd",
+          "array"
+        ]
+      }
+    ],
+    "canonical_solution": "function filterBySubstring(strings: string[], substring: string): string[] {\n  return strings.filter(s => s.includes(substring));\n}"
+  },
+  {
+    "id": "HE-009",
+    "prompt": "For a given list of integers, return a tuple consisting of a sum and a product of all the integers in a list. Empty sum should be equal to 0 and empty product should be equal to 1.",
+    "function_signature": "function sumProduct(numbers: number[]): [number, number]",
+    "test_cases": [
+      {
+        "input": [
+          []
+        ],
+        "expected": [
+          0,
+          1
+        ]
+      },
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4
+          ]
+        ],
+        "expected": [
+          10,
+          24
+        ]
+      }
+    ],
+    "canonical_solution": "function sumProduct(numbers: number[]): [number, number] {\n  const sum = numbers.reduce((a, b) => a + b, 0);\n  const product = numbers.reduce((a, b) => a * b, 1);\n  return [sum, product];\n}"
+  },
+  {
+    "id": "HE-010",
+    "prompt": "From a given list of integers, generate a list of rolling maximum element found until given moment in the sequence.",
+    "function_signature": "function rollingMax(numbers: number[]): number[]",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            2,
+            3,
+            4,
+            2
+          ]
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          3,
+          3,
+          4,
+          4
+        ]
+      }
+    ],
+    "canonical_solution": "function rollingMax(numbers: number[]): number[] {\n  const result: number[] = [];\n  let max = -Infinity;\n  for (const n of numbers) {\n    max = Math.max(max, n);\n    result.push(max);\n  }\n  return result;\n}"
+  },
+  {
+    "id": "HE-011",
+    "prompt": "Find the shortest palindrome that begins with a supplied string. Algorithm idea is simple: - Find the longest postfix of supplied string that is a palindrome. - Append to the end of the string reverse of a string prefix that comes before the palindromic suffix.",
+    "function_signature": "function makePalindrome(s: string): string",
+    "test_cases": [
+      {
+        "input": [
+          ""
+        ],
+        "expected": ""
+      },
+      {
+        "input": [
+          "cat"
+        ],
+        "expected": "catac"
+      },
+      {
+        "input": [
+          "cata"
+        ],
+        "expected": "catac"
+      }
+    ],
+    "canonical_solution": "function makePalindrome(s: string): string {\n  if (s === '') return '';\n  function isPalin(str: string): boolean {\n    return str === str.split('').reverse().join('');\n  }\n  for (let i = 0; i < s.length; i++) {\n    if (isPalin(s.slice(i))) {\n      return s + s.slice(0, i).split('').reverse().join('');\n    }\n  }\n  return s + s.slice(0, s.length - 1).split('').reverse().join('');\n}"
+  },
+  {
+    "id": "HE-012",
+    "prompt": "Input are two strings a and b consisting only of 1s and 0s. Perform binary XOR on these inputs and return result also as a string.",
+    "function_signature": "function stringXor(a: string, b: string): string",
+    "test_cases": [
+      {
+        "input": [
+          "010",
+          "110"
+        ],
+        "expected": "100"
+      }
+    ],
+    "canonical_solution": "function stringXor(a: string, b: string): string {\n  return a.split('').map((ch, i) => ch === b[i] ? '0' : '1').join('');\n}"
+  },
+  {
+    "id": "HE-013",
+    "prompt": "Out of list of strings, return the longest one. Return the first one in case of multiple strings of the same length. Return null in case the input list is empty.",
+    "function_signature": "function longest(strings: string[]): string | null",
+    "test_cases": [
+      {
+        "input": [
+          []
+        ],
+        "expected": null
+      },
+      {
+        "input": [
+          [
+            "a",
+            "b",
+            "c"
+          ]
+        ],
+        "expected": "a"
+      },
+      {
+        "input": [
+          [
+            "a",
+            "bb",
+            "ccc"
+          ]
+        ],
+        "expected": "ccc"
+      }
+    ],
+    "canonical_solution": "function longest(strings: string[]): string | null {\n  if (strings.length === 0) return null;\n  return strings.reduce((a, b) => a.length >= b.length ? a : b);\n}"
+  },
+  {
+    "id": "HE-014",
+    "prompt": "Return a greatest common divisor of two integers a and b.",
+    "function_signature": "function greatestCommonDivisor(a: number, b: number): number",
+    "test_cases": [
+      {
+        "input": [
+          3,
+          5
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          25,
+          15
+        ],
+        "expected": 5
+      }
+    ],
+    "canonical_solution": "function greatestCommonDivisor(a: number, b: number): number {\n  while (b !== 0) {\n    const t = b;\n    b = a % b;\n    a = t;\n  }\n  return a;\n}"
+  },
+  {
+    "id": "HE-015",
+    "prompt": "Return list of all prefixes from shortest to longest of the input string.",
+    "function_signature": "function allPrefixes(s: string): string[]",
+    "test_cases": [
+      {
+        "input": [
+          "abc"
+        ],
+        "expected": [
+          "a",
+          "ab",
+          "abc"
+        ]
+      }
+    ],
+    "canonical_solution": "function allPrefixes(s: string): string[] {\n  return s.split('').map((_, i) => s.slice(0, i + 1));\n}"
+  },
+  {
+    "id": "HE-016",
+    "prompt": "Return a string containing space-delimited numbers starting from 0 upto n inclusive.",
+    "function_signature": "function stringSequence(n: number): string",
+    "test_cases": [
+      {
+        "input": [
+          0
+        ],
+        "expected": "0"
+      },
+      {
+        "input": [
+          5
+        ],
+        "expected": "0 1 2 3 4 5"
+      }
+    ],
+    "canonical_solution": "function stringSequence(n: number): string {\n  return Array.from({ length: n + 1 }, (_, i) => String(i)).join(' ');\n}"
+  },
+  {
+    "id": "HE-017",
+    "prompt": "Given a string, find out how many distinct characters (regardless of case) does it consist of.",
+    "function_signature": "function countDistinctCharacters(s: string): number",
+    "test_cases": [
+      {
+        "input": [
+          "xyzXYZ"
+        ],
+        "expected": 3
+      },
+      {
+        "input": [
+          "Jerry"
+        ],
+        "expected": 4
+      }
+    ],
+    "canonical_solution": "function countDistinctCharacters(s: string): number {\n  return new Set(s.toLowerCase()).size;\n}"
+  },
+  {
+    "id": "HE-018",
+    "prompt": "Input to this function is a string representing musical notes in a special ASCII format. Your task is to parse this string and return list of integers corresponding to how many beats does each not last. Here is a legend: 'o' - whole note, lasts four beats; 'o|' - half note, lasts two beats; '.|' - quater note, lasts one beat.",
+    "function_signature": "function parseMusic(music_string: string): number[]",
+    "test_cases": [
+      {
+        "input": [
+          "o o| .| o| o| .| .| .| .| o o"
+        ],
+        "expected": [
+          4,
+          2,
+          1,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          4,
+          4
+        ]
+      }
+    ],
+    "canonical_solution": "function parseMusic(music_string: string): number[] {\n  const map: Record<string, number> = { 'o': 4, 'o|': 2, '.|': 1 };\n  return music_string.split(' ').filter(Boolean).map(n => map[n] ?? 0);\n}"
+  },
+  {
+    "id": "HE-019",
+    "prompt": "Find how many times a given substring can be found in the original string. Count overlapping cases.",
+    "function_signature": "function howManyTimes(s: string, substring: string): number",
+    "test_cases": [
+      {
+        "input": [
+          "",
+          "a"
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          "aaa",
+          "a"
+        ],
+        "expected": 3
+      },
+      {
+        "input": [
+          "aaaa",
+          "aa"
+        ],
+        "expected": 3
+      }
+    ],
+    "canonical_solution": "function howManyTimes(s: string, substring: string): number {\n  if (substring.length === 0) return 0;\n  let count = 0;\n  for (let i = 0; i <= s.length - substring.length; i++) {\n    if (s.slice(i, i + substring.length) === substring) count++;\n  }\n  return count;\n}"
+  },
+  {
+    "id": "HE-020",
+    "prompt": "Input is a space-delimited string of number words. Your task is to sort the provided string alphabetically and then return the result. The number words are: 'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'.",
+    "function_signature": "function sortNumbers(numbers: string): string",
+    "test_cases": [
+      {
+        "input": [
+          "three one five"
+        ],
+        "expected": "one three five"
+      }
+    ],
+    "canonical_solution": "function sortNumbers(numbers: string): string {\n  const order = ['zero','one','two','three','four','five','six','seven','eight','nine'];\n  return numbers.split(' ').filter(Boolean).sort((a, b) => order.indexOf(a) - order.indexOf(b)).join(' ');\n}"
+  },
+  {
+    "id": "HE-021",
+    "prompt": "Write a function that returns the greatest common divisor of two integers.",
+    "function_signature": "function greatestCommonDivisor(a: number, b: number): number",
+    "test_cases": [
+      {
+        "input": [
+          3,
+          5
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          25,
+          15
+        ],
+        "expected": 5
+      },
+      {
+        "input": [
+          100,
+          75
+        ],
+        "expected": 25
+      },
+      {
+        "input": [
+          0,
+          5
+        ],
+        "expected": 5
+      }
+    ],
+    "canonical_solution": "function greatestCommonDivisor(a: number, b: number): number {\n  while (b !== 0) { [a, b] = [b, a % b]; }\n  return a;\n}"
+  },
+  {
+    "id": "HE-022",
+    "prompt": "Write a function that checks if a number is a perfect square.",
+    "function_signature": "function isPerfectSquare(n: number): boolean",
+    "test_cases": [
+      {
+        "input": [
+          1
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          4
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          9
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          2
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          0
+        ],
+        "expected": true
+      }
+    ],
+    "canonical_solution": "function isPerfectSquare(n: number): boolean {\n  if (n < 0) return false;\n  const s = Math.floor(Math.sqrt(n));\n  return s * s === n;\n}"
+  },
+  {
+    "id": "HE-023",
+    "prompt": "Write a function that returns the nth Fibonacci number (0-indexed).",
+    "function_signature": "function fibonacci(n: number): number",
+    "test_cases": [
+      {
+        "input": [
+          0
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          1
+        ],
+        "expected": 1
+      },
+      {
+        "input": [
+          6
+        ],
+        "expected": 8
+      },
+      {
+        "input": [
+          10
+        ],
+        "expected": 55
+      }
+    ],
+    "canonical_solution": "function fibonacci(n: number): number {\n  if (n <= 1) return n;\n  let a = 0, b = 1;\n  for (let i = 2; i <= n; i++) { [a, b] = [b, a + b]; }\n  return b;\n}"
+  },
+  {
+    "id": "HE-024",
+    "prompt": "Write a function that flattens a nested array one level deep.",
+    "function_signature": "function flatten(arr: (number | number[])[]): number[]",
+    "test_cases": [
+      {
+        "input": [
+          [
+            [
+              1,
+              2
+            ],
+            [
+              3,
+              4
+            ]
+          ]
+        ],
+        "expected": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "input": [
+          [
+            [
+              1
+            ],
+            2,
+            [
+              3
+            ]
+          ]
+        ],
+        "expected": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "input": [
+          [
+            []
+          ]
+        ],
+        "expected": []
+      }
+    ],
+    "canonical_solution": "function flatten(arr: (number | number[])[]): number[] {\n  return arr.reduce<number[]>((acc, v) => acc.concat(v), []);\n}"
+  },
+  {
+    "id": "HE-025",
+    "prompt": "Write a function that counts the number of vowels in a string.",
+    "function_signature": "function countVowels(s: string): number",
+    "test_cases": [
+      {
+        "input": [
+          "hello"
+        ],
+        "expected": 2
+      },
+      {
+        "input": [
+          "aeiou"
+        ],
+        "expected": 5
+      },
+      {
+        "input": [
+          "xyz"
+        ],
+        "expected": 0
+      },
+      {
+        "input": [
+          ""
+        ],
+        "expected": 0
+      }
+    ],
+    "canonical_solution": "function countVowels(s: string): number {\n  return (s.match(/[aeiouAEIOU]/g) ?? []).length;\n}"
+  },
+  {
+    "id": "HE-026",
+    "prompt": "Write a function that removes all duplicates from an array while preserving order.",
+    "function_signature": "function unique<T>(arr: T[]): T[]",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            2,
+            3,
+            1
+          ]
+        ],
+        "expected": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "input": [
+          [
+            "a",
+            "b",
+            "a"
+          ]
+        ],
+        "expected": [
+          "a",
+          "b"
+        ]
+      },
+      {
+        "input": [
+          []
+        ],
+        "expected": []
+      }
+    ],
+    "canonical_solution": "function unique<T>(arr: T[]): T[] {\n  return [...new Set(arr)];\n}"
+  },
+  {
+    "id": "HE-027",
+    "prompt": "Write a function that rotates an array left by k positions.",
+    "function_signature": "function rotateLeft(arr: number[], k: number): number[]",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          2
+        ],
+        "expected": [
+          3,
+          4,
+          5,
+          1,
+          2
+        ]
+      },
+      {
+        "input": [
+          [
+            1,
+            2,
+            3
+          ],
+          0
+        ],
+        "expected": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "input": [
+          [
+            1,
+            2,
+            3
+          ],
+          3
+        ],
+        "expected": [
+          1,
+          2,
+          3
+        ]
+      }
+    ],
+    "canonical_solution": "function rotateLeft(arr: number[], k: number): number[] {\n  if (!arr.length) return arr;\n  const n = k % arr.length;\n  return [...arr.slice(n), ...arr.slice(0, n)];\n}"
+  },
+  {
+    "id": "HE-028",
+    "prompt": "Write a function that returns the second largest distinct element in an array, or null if there is no such element.",
+    "function_signature": "function secondLargest(nums: number[]): number | null",
+    "test_cases": [
+      {
+        "input": [
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        "expected": 2
+      },
+      {
+        "input": [
+          [
+            1,
+            1,
+            1
+          ]
+        ],
+        "expected": null
+      },
+      {
+        "input": [
+          [
+            5
+          ]
+        ],
+        "expected": null
+      },
+      {
+        "input": [
+          [
+            -1,
+            0,
+            1
+          ]
+        ],
+        "expected": 0
+      }
+    ],
+    "canonical_solution": "function secondLargest(nums: number[]): number | null {\n  const s = [...new Set(nums)].sort((a, b) => b - a);\n  return s.length >= 2 ? s[1] : null;\n}"
+  },
+  {
+    "id": "HE-029",
+    "prompt": "Write a function that checks if a string is a valid IPv4 address.",
+    "function_signature": "function isValidIPv4(ip: string): boolean",
+    "test_cases": [
+      {
+        "input": [
+          "192.168.1.1"
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "255.255.255.255"
+        ],
+        "expected": true
+      },
+      {
+        "input": [
+          "256.1.1.1"
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          "1.1.1"
+        ],
+        "expected": false
+      },
+      {
+        "input": [
+          "0.0.0.0"
+        ],
+        "expected": true
+      }
+    ],
+    "canonical_solution": "function isValidIPv4(ip: string): boolean {\n  const parts = ip.split(\".\");\n  if (parts.length !== 4) return false;\n  return parts.every(p => /^\\d+$/.test(p) && parseInt(p) >= 0 && parseInt(p) <= 255);\n}"
+  },
+  {
+    "id": "HE-030",
+    "prompt": "Write a function that groups an array of objects by a given key.",
+    "function_signature": "function groupBy<T>(arr: T[], key: keyof T): Record<string, T[]>",
+    "test_cases": [
+      {
+        "input": [
+          [
+            {
+              "type": "a",
+              "v": 1
+            },
+            {
+              "type": "b",
+              "v": 2
+            },
+            {
+              "type": "a",
+              "v": 3
+            }
+          ],
+          "type"
+        ],
+        "expected": {
+          "a": [
+            {
+              "type": "a",
+              "v": 1
+            },
+            {
+              "type": "a",
+              "v": 3
+            }
+          ],
+          "b": [
+            {
+              "type": "b",
+              "v": 2
+            }
+          ]
+        }
+      },
+      {
+        "input": [
+          [],
+          "key"
+        ],
+        "expected": {}
+      }
+    ],
+    "canonical_solution": "function groupBy<T>(arr: T[], key: keyof T): Record<string, T[]> {\n  return arr.reduce((acc, item) => {\n    const k = String(item[key]);\n    (acc[k] = acc[k] ?? []).push(item);\n    return acc;\n  }, {} as Record<string, T[]>);\n}"
+  }
+]

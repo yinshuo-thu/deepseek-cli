@@ -28,6 +28,7 @@ import { dispatch as dispatchSlash, commandNames } from './commands/index.js';
 import { Session, loadSession, type SessionMeta } from './session/history.js';
 import { saveConfig, type Config, type ModelId, type PermissionMode, type ReasoningEffort, CONFIG_FILE } from './config/index.js';
 import { loginFlow, logoutFlow, stopActiveProxy, whoamiFlow } from './commands/login.js';
+import { AuthWizard, type AuthWizardResult } from './ui/AuthWizard.js';
 import { listAgentsMarkdown, reloadAgentsMarkdown, writeAgentFile, defaultDraft } from './commands/agents.js';
 import { listHooksMarkdown, reloadHooksMarkdown, trustHooksMarkdown } from './commands/hooks.js';
 import { listSkillsMarkdown, reloadSkillsMarkdown, addSkillMarkdown } from './commands/skills.js';
@@ -108,6 +109,7 @@ export function App({ config: initialConfig, version, initialRecentSessions }: P
   const [exitPlanRequest, setExitPlanRequest] = useState<{ toolName: string; resolve: (a: 'exit-plan' | 'cancel') => void } | null>(null);
   const [showMcpDialog, setShowMcpDialog] = useState(false);
   const [showModelDialog, setShowModelDialog] = useState(false);
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
   const [vimMode, setVimMode] = useState(false);
   const sessionStartRef = useRef(Date.now());
 
@@ -180,7 +182,7 @@ export function App({ config: initialConfig, version, initialRecentSessions }: P
         }));
       return;
     }
-  }, { isActive: !pendingPerm && !pickingSession && !exitPlanRequest && !showMcpDialog && !showModelDialog });
+  }, { isActive: !pendingPerm && !pickingSession && !exitPlanRequest && !showMcpDialog && !showModelDialog && !showLoginDialog });
 
   const pushMsg = useCallback((m: UIMessage) => {
     setMessages((prev) => [...prev, m]);
@@ -266,47 +268,7 @@ export function App({ config: initialConfig, version, initialRecentSessions }: P
             pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: '/compact is coming in M3.' });
             return;
           case 'auth-login': {
-            // Fire-and-forget: server start is fast, but the browser
-            // round-trip can take minutes. We surface progress via system
-            // messages and never block the input box.
-            (async () => {
-              try {
-                const result = await loginFlow({
-                  onUrl: (url) => {
-                    pushMsg({
-                      id: `sys-${Date.now()}`,
-                      role: 'system',
-                      content: `auth server listening at ${url} — opening browser…`,
-                    });
-                  },
-                });
-                if (result.ok && result.proxyUrl) {
-                  try {
-                    const next = await saveConfig({
-                      apiFlavor: 'deepseek-web',
-                      baseUrl: result.proxyUrl,
-                    });
-                    setConfig(next);
-                    clientRef.current = new DeepSeekClient(next);
-                  } catch (err) {
-                    const msg = err instanceof Error ? err.message : String(err);
-                    pushMsg({
-                      id: `err-${Date.now()}`,
-                      role: 'system',
-                      content: `error: failed to persist proxy config — ${msg}`,
-                    });
-                  }
-                }
-                pushMsg({
-                  id: `sys-${Date.now()}`,
-                  role: 'system',
-                  content: result.ok ? result.message : `error: ${result.message}`,
-                });
-              } catch (err) {
-                const msg = err instanceof Error ? err.message : String(err);
-                pushMsg({ id: `err-${Date.now()}`, role: 'system', content: `error: ${msg}` });
-              }
-            })();
+            setShowLoginDialog(true);
             return;
           }
           case 'auth-logout': {
@@ -836,6 +798,44 @@ export function App({ config: initialConfig, version, initialRecentSessions }: P
           }}
           onClose={() => setShowModelDialog(false)}
         />
+      )}
+
+      {showLoginDialog && (
+        <Box flexDirection="column" paddingX={1} paddingY={0} borderStyle="round" borderColor={palette.deepseekBlue}>
+          <Box marginBottom={1}>
+            <Text bold color={palette.deepseekBlue}>Login — choose auth method</Text>
+          </Box>
+          <AuthWizard
+            onDone={async (result: AuthWizardResult) => {
+              setShowLoginDialog(false);
+              if (result.type === 'cancel') return;
+
+              let patch: Parameters<typeof saveConfig>[0];
+              let msg: string;
+
+              if (result.type === 'api-key') {
+                patch = { apiKey: result.apiKey, baseUrl: 'https://api.deepseek.com', apiFlavor: 'openai' };
+                msg = 'API key saved. Using DeepSeek API.';
+              } else if (result.type === 'browser') {
+                patch = { apiFlavor: 'deepseek-web', baseUrl: result.proxyUrl };
+                msg = `Logged in via browser. Local proxy: ${result.proxyUrl}`;
+              } else {
+                patch = { baseUrl: result.baseUrl, apiKey: result.apiKey || undefined, apiFlavor: 'openai' };
+                msg = `Custom proxy configured: ${result.baseUrl}`;
+              }
+
+              try {
+                const next = await saveConfig(patch);
+                setConfig(next);
+                clientRef.current = new DeepSeekClient(next);
+                pushMsg({ id: `sys-${Date.now()}`, role: 'system', content: msg });
+              } catch (err) {
+                const errMsg = err instanceof Error ? err.message : String(err);
+                pushMsg({ id: `err-${Date.now()}`, role: 'system', content: `error saving config: ${errMsg}` });
+              }
+            }}
+          />
+        </Box>
       )}
 
       {!pendingPerm && !pickingSession && (

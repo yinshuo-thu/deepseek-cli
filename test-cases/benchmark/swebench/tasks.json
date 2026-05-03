@@ -1,0 +1,214 @@
+[
+  {
+    "id": "SW-001",
+    "description": "Off-by-one error in loop \u2014 iterates one past the end of the array causing undefined access.",
+    "buggy_code": "function sumArray(arr: number[]): number {\n  let sum = 0;\n  for (let i = 0; i <= arr.length; i++) {\n    sum += arr[i];\n  }\n  return sum;\n}",
+    "tests_before": [
+      "JSON.stringify(sumArray([1,2,3])) !== '6'"
+    ],
+    "tests_after": [
+      "sumArray([1,2,3]) === 6",
+      "sumArray([]) === 0",
+      "sumArray([5]) === 5"
+    ],
+    "hint": "Change <= to < in the loop condition."
+  },
+  {
+    "id": "SW-002",
+    "description": "Missing default parameter \u2014 function doesn't handle missing argument and throws when name is undefined.",
+    "buggy_code": "function greet(name: string): string { return `Hello, ${name.toUpperCase()}!`; }",
+    "tests_before": [
+      "(function() { try { greet(undefined as any); return false; } catch(e) { return true; } })()"
+    ],
+    "tests_after": [
+      "greet(undefined as any) === 'Hello, Guest!'",
+      "greet('world') === 'Hello, WORLD!'"
+    ],
+    "hint": "Add a default parameter: name = 'Guest'",
+    "canonical_fix": "function greet(name: string = 'Guest'): string { return `Hello, ${name.toUpperCase()}!`; }"
+  },
+  {
+    "id": "SW-003",
+    "description": "Wrong equality operator \u2014 using == causes type coercion: '0' == false is true.",
+    "buggy_code": "function isFalsy(val: any): boolean {\n  return val == false;\n}",
+    "tests_before": [
+      "isFalsy('0') === false"
+    ],
+    "tests_after": [
+      "isFalsy('0') === false",
+      "isFalsy(0) === true",
+      "isFalsy('') === true",
+      "isFalsy(false) === true",
+      "isFalsy(null) === true"
+    ],
+    "hint": "Use `return !val;` \u2014 the `!` operator covers all falsy values (0, null, undefined, false, '')."
+  },
+  {
+    "id": "SW-004",
+    "description": "Missing null check \u2014 accessing property on potentially null object throws TypeError.",
+    "buggy_code": "function getUserName(user: { name: string } | null): string {\n  return user.name;\n}",
+    "tests_before": [
+      "(function() { try { getUserName(null); return false; } catch { return true; } })()"
+    ],
+    "tests_after": [
+      "getUserName(null) === ''",
+      "getUserName({ name: 'Alice' }) === 'Alice'"
+    ],
+    "hint": "Add a null check and return an empty string or default value when user is null."
+  },
+  {
+    "id": "SW-005",
+    "description": "Mutating function parameter \u2014 sorts the input array in-place causing unexpected side effects for the caller.",
+    "buggy_code": "function sortedCopy(arr: number[]): number[] {\n  return arr.sort((a, b) => a - b);\n}",
+    "tests_before": [
+      "(function() { const a = [3,1,2]; sortedCopy(a); return a[0] === 3; })()"
+    ],
+    "tests_after": [
+      "(function() { const a = [3,1,2]; const s = sortedCopy(a); return a[0] === 3 && s[0] === 1; })()"
+    ],
+    "hint": "Create a copy of the array before sorting: [...arr].sort(...)"
+  },
+  {
+    "id": "SW-006",
+    "description": "Closure over loop variable \u2014 using var in a loop means all closures share the same variable.",
+    "buggy_code": "function makeAdders(n: number): Array<() => number> {\n  const adders: Array<() => number> = [];\n  for (var i = 0; i < n; i++) {\n    adders.push(() => i);\n  }\n  return adders;\n}",
+    "tests_before": [
+      "makeAdders(3)[0]() === 0"
+    ],
+    "tests_after": [
+      "makeAdders(3)[0]() === 0",
+      "makeAdders(3)[1]() === 1",
+      "makeAdders(3)[2]() === 2"
+    ],
+    "hint": "Change var to let in the for loop."
+  },
+  {
+    "id": "SW-007",
+    "description": "Wrong reduce initial value omitted \u2014 reduce without initial value throws on empty array.",
+    "buggy_code": "function safeSum(arr: number[]): number {\n  return arr.reduce((acc, n) => acc + n);\n}",
+    "tests_before": [
+      "(function() { try { safeSum([]); return false; } catch { return true; } })()"
+    ],
+    "tests_after": [
+      "safeSum([]) === 0",
+      "safeSum([1,2,3]) === 6"
+    ],
+    "hint": "Provide 0 as the second argument to reduce."
+  },
+  {
+    "id": "SW-008",
+    "description": "Regex not anchored \u2014 the pattern matches any substring, not just the full string.",
+    "buggy_code": "function isValidHex(s: string): boolean {\n  return /[0-9a-fA-F]+/.test(s);\n}",
+    "tests_before": [
+      "isValidHex('xyz123') === false"
+    ],
+    "tests_after": [
+      "isValidHex('xyz123') === false",
+      "isValidHex('1a2b3c') === true",
+      "isValidHex('DEADBEEF') === true",
+      "isValidHex('gg') === false"
+    ],
+    "hint": "Anchor the regex with ^ and $: /^[0-9a-fA-F]+$/"
+  },
+  {
+    "id": "SW-009",
+    "description": "Integer overflow \u2014 regular Number cannot represent large factorials accurately.",
+    "buggy_code": "function bigFactorial(n: number): string {\n  let result = 1;\n  for (let i = 2; i <= n; i++) {\n    result *= i;\n  }\n  return String(result);\n}",
+    "tests_before": [
+      "bigFactorial(25) === '15511210043330985984000000'"
+    ],
+    "tests_after": [
+      "bigFactorial(25) === '15511210043330985984000000'",
+      "bigFactorial(0) === '1'",
+      "bigFactorial(10) === '3628800'"
+    ],
+    "hint": "Use BigInt: start with 1n and multiply with BigInt(i)."
+  },
+  {
+    "id": "SW-010",
+    "description": "Missing await \u2014 calling an async function without await returns a Promise, not the resolved value.",
+    "buggy_code": "async function getLength(asyncStrFn: () => Promise<string>): Promise<number> {\n  const str = asyncStrFn();\n  return str.length;\n}",
+    "tests_before": [
+      "(await getLength(async () => 'hello')) === 5 ? false : true"
+    ],
+    "tests_after": [
+      "(await getLength(async () => 'hello')) === 5",
+      "(await getLength(async () => '')) === 0"
+    ],
+    "hint": "Add await before asyncStrFn()."
+  },
+  {
+    "id": "SW-011",
+    "description": "Fix the bug: the function should return the product of all elements but uses addition instead.",
+    "buggy_code": "function product(arr: number[]): number {\n  let result = 0;\n  for (const n of arr) result += n;\n  return result;\n}",
+    "tests_before": [
+      "product([2,3,4]) !== 24"
+    ],
+    "tests_after": [
+      "product([2,3,4]) === 24",
+      "product([1]) === 1",
+      "product([0,5]) === 0",
+      "product([]) === 1"
+    ],
+    "hint": "Initialize result to 1 and use multiplication."
+  },
+  {
+    "id": "SW-012",
+    "description": "Fix the bug: the function should return true if the string is empty or all whitespace, but it always returns false.",
+    "buggy_code": "function isBlank(s: string): boolean {\n  return false;\n}",
+    "tests_before": [
+      "isBlank(\"\") !== true"
+    ],
+    "tests_after": [
+      "isBlank(\"\") === true",
+      "isBlank(\"   \") === true",
+      "isBlank(\"hello\") === false",
+      "isBlank(\" a \") === false"
+    ],
+    "hint": "Use s.trim().length === 0"
+  },
+  {
+    "id": "SW-013",
+    "description": "Fix the bug: the function should return the maximum element but returns the minimum.",
+    "buggy_code": "function maxElement(arr: number[]): number {\n  return Math.min(...arr);\n}",
+    "tests_before": [
+      "maxElement([1,3,2]) !== 3"
+    ],
+    "tests_after": [
+      "maxElement([1,3,2]) === 3",
+      "maxElement([-1,-5,-2]) === -1",
+      "maxElement([42]) === 42"
+    ],
+    "hint": "Use Math.max instead of Math.min."
+  },
+  {
+    "id": "SW-014",
+    "description": "Fix the bug: the capitalize function only capitalizes the first character but should capitalize the first character and lowercase the rest.",
+    "buggy_code": "function capitalize(s: string): string {\n  if (!s) return s;\n  return s[0].toUpperCase() + s.slice(1);\n}",
+    "tests_before": [
+      "capitalize(\"hELLO\") !== \"Hello\""
+    ],
+    "tests_after": [
+      "capitalize(\"hELLO\") === \"Hello\"",
+      "capitalize(\"world\") === \"World\"",
+      "capitalize(\"\") === \"\"",
+      "capitalize(\"a\") === \"A\""
+    ],
+    "hint": "Add .toLowerCase() to the slice(1) part."
+  },
+  {
+    "id": "SW-015",
+    "description": "Fix the bug: the function should check if n is divisible by both 3 and 5, but uses OR instead of AND.",
+    "buggy_code": "function fizzBuzzCheck(n: number): boolean {\n  return n % 3 === 0 || n % 5 === 0;\n}",
+    "tests_before": [
+      "fizzBuzzCheck(9) !== false"
+    ],
+    "tests_after": [
+      "fizzBuzzCheck(15) === true",
+      "fizzBuzzCheck(9) === false",
+      "fizzBuzzCheck(10) === false",
+      "fizzBuzzCheck(30) === true"
+    ],
+    "hint": "Change || to && to require divisibility by both 3 and 5."
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "SW-001": "```typescript\nfunction sumArray(arr: number[]): number {\n  let sum = 0;\n  for (let i = 0; i < arr.length; i++) {\n    sum += arr[i];\n  }\n  return sum;\n}\n```",
+  "SW-002": "```typescript\nfunction greet(name: string = \"World\"): string { \n  return `Hello, ${name.toUpperCase()}!`; \n}\n```",
+  "SW-003": "```typescript\nfunction isFalsy(val: any): boolean {\n  return val === false;\n}\n```",
+  "SW-004": "```typescript\nfunction getUserName(user: { name: string } | null): string {\n  return user?.name ?? '';\n}\n```",
+  "SW-005": "```typescript\nfunction sortedCopy(arr: number[]): number[] {\n  return [...arr].sort((a, b) => a - b);\n}\n```",
+  "SW-006": "```typescript\nfunction makeAdders(n: number): Array<() => number> {\n  const adders: Array<() => number> = [];\n  for (let i = 0; i < n; i++) {\n    adders.push(() => i);\n  }\n  return adders;\n}\n```",
+  "SW-007": "```typescript\nfunction safeSum(arr: number[]): number {\n  return arr.reduce((acc, n) => acc + n, 0);\n}\n```",
+  "SW-008": "```typescript\nfunction isValidHex(s: string): boolean {\n  return /^[0-9a-fA-F]+$/.test(s);\n}\n```",
+  "SW-009": "```typescript\nfunction bigFactorial(n: number): string {\n  // Use BigInt for arbitrary precision\n  let result = 1n;\n  for (let i = 2n; i <= BigInt(n); i++) {\n    result *= i;\n  }\n  return result.toString();\n}\n```",
+  "SW-010": "```typescript\nasync function getLength(asyncStrFn: () => Promise<string>): Promise<number> {\n  const str = await asyncStrFn();\n  return str.length;\n}\n```",
+  "SW-011": "```typescript\nfunction product(arr: number[]): number {\n  let result = 1;\n  for (const n of arr) result *= n;\n  return result;\n}\n```",
+  "SW-012": "```typescript\nfunction isBlank(s: string): boolean {\n  return s.trim().length === 0;\n}\n```",
+  "SW-013": "```typescript\nfunction maxElement(arr: number[]): number {\n  return Math.max(...arr);\n}\n```",
+  "SW-014": "```typescript\nfunction capitalize(s: string): string {\n  if (!s) return s;\n  return s[0].toUpperCase() + s.slice(1).toLowerCase();\n}\n```",
+  "SW-015": "```typescript\nfunction fizzBuzzCheck(n: number): boolean {\n  return n % 3 === 0 && n % 5 === 0;\n}\n```"
+}

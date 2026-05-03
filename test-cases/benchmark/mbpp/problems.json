@@ -1,0 +1,158 @@
+[
+  {
+    "id": "MBPP-001",
+    "prompt": "Write a function to find the sum of all elements in a list.",
+    "function_signature": "function sumList(lst: number[]): number",
+    "assert_tests": [
+      "sumList([1,2,3]) === 6",
+      "sumList([]) === 0"
+    ],
+    "canonical_solution": "function sumList(lst: number[]): number {\n  return lst.reduce((a, b) => a + b, 0);\n}"
+  },
+  {
+    "id": "MBPP-002",
+    "prompt": "Write a function to find the max element in a list.",
+    "function_signature": "function findMax(lst: number[]): number",
+    "assert_tests": [
+      "findMax([1,2,3]) === 3",
+      "findMax([-1,-2]) === -1"
+    ],
+    "canonical_solution": "function findMax(lst: number[]): number {\n  return Math.max(...lst);\n}"
+  },
+  {
+    "id": "MBPP-003",
+    "prompt": "Write a function to check if a string is a palindrome.",
+    "function_signature": "function isPalindrome(s: string): boolean",
+    "assert_tests": [
+      "isPalindrome('racecar') === true",
+      "isPalindrome('hello') === false"
+    ],
+    "canonical_solution": "function isPalindrome(s: string): boolean {\n  return s === s.split('').reverse().join('');\n}"
+  },
+  {
+    "id": "MBPP-004",
+    "prompt": "Write a function to count occurrences of an element in a list.",
+    "function_signature": "function countOccurrences(lst: any[], elem: any): number",
+    "assert_tests": [
+      "countOccurrences([1,2,2,3],2) === 2"
+    ],
+    "canonical_solution": "function countOccurrences(lst: any[], elem: any): number {\n  return lst.filter(x => x === elem).length;\n}"
+  },
+  {
+    "id": "MBPP-005",
+    "prompt": "Write a function to flatten a one-level nested array.",
+    "function_signature": "function flattenOne(lst: any[][]): any[]",
+    "assert_tests": [
+      "JSON.stringify(flattenOne([[1,2],[3,4]])) === JSON.stringify([1,2,3,4])"
+    ],
+    "canonical_solution": "function flattenOne(lst: any[][]): any[] {\n  return ([] as any[]).concat(...lst);\n}"
+  },
+  {
+    "id": "MBPP-006",
+    "prompt": "Write a function to remove duplicates from a list preserving order.",
+    "function_signature": "function removeDuplicates(lst: any[]): any[]",
+    "assert_tests": [
+      "JSON.stringify(removeDuplicates([1,2,1,3])) === JSON.stringify([1,2,3])"
+    ],
+    "canonical_solution": "function removeDuplicates(lst: any[]): any[] {\n  const seen = new Set();\n  return lst.filter(x => {\n    if (seen.has(x)) return false;\n    seen.add(x);\n    return true;\n  });\n}"
+  },
+  {
+    "id": "MBPP-007",
+    "prompt": "Write a function to compute factorial of a number.",
+    "function_signature": "function factorial(n: number): number",
+    "assert_tests": [
+      "factorial(5) === 120",
+      "factorial(0) === 1"
+    ],
+    "canonical_solution": "function factorial(n: number): number {\n  if (n <= 1) return 1;\n  return n * factorial(n - 1);\n}"
+  },
+  {
+    "id": "MBPP-008",
+    "prompt": "Write a function to find common elements of two lists.",
+    "function_signature": "function commonElements(a: any[], b: any[]): any[]",
+    "assert_tests": [
+      "JSON.stringify(commonElements([1,2,3],[2,3,4]).sort()) === JSON.stringify([2,3])"
+    ],
+    "canonical_solution": "function commonElements(a: any[], b: any[]): any[] {\n  const setB = new Set(b);\n  return a.filter(x => setB.has(x));\n}"
+  },
+  {
+    "id": "MBPP-009",
+    "prompt": "Write a function to check if a number is prime.",
+    "function_signature": "function isPrime(n: number): boolean",
+    "assert_tests": [
+      "isPrime(7) === true",
+      "isPrime(4) === false",
+      "isPrime(1) === false"
+    ],
+    "canonical_solution": "function isPrime(n: number): boolean {\n  if (n < 2) return false;\n  for (let i = 2; i <= Math.sqrt(n); i++) {\n    if (n % i === 0) return false;\n  }\n  return true;\n}"
+  },
+  {
+    "id": "MBPP-010",
+    "prompt": "Write a function to sort a list of strings by their length.",
+    "function_signature": "function sortByLength(lst: string[]): string[]",
+    "assert_tests": [
+      "JSON.stringify(sortByLength(['bb','a','ccc'])) === JSON.stringify(['a','bb','ccc'])"
+    ],
+    "canonical_solution": "function sortByLength(lst: string[]): string[] {\n  return [...lst].sort((a, b) => a.length - b.length);\n}"
+  },
+  {
+    "id": "MBPP-011",
+    "prompt": "Write a Python function to find all prime numbers up to n using the Sieve of Eratosthenes. Return a list of primes.",
+    "function_signature": "function sieve(n: number): number[]",
+    "assert_tests": [
+      "JSON.stringify(sieve(10)) === JSON.stringify([2,3,5,7])",
+      "JSON.stringify(sieve(2)) === JSON.stringify([2])",
+      "JSON.stringify(sieve(1)) === JSON.stringify([])",
+      "sieve(20).includes(19) === true"
+    ],
+    "canonical_solution": "function sieve(n: number): number[] {\n  if (n < 2) return [];\n  const composite = new Array(n + 1).fill(false);\n  for (let i = 2; i * i <= n; i++) {\n    if (!composite[i]) for (let j = i*i; j <= n; j += i) composite[j] = true;\n  }\n  return Array.from({length: n-1}, (_,i) => i+2).filter(i => !composite[i]);\n}"
+  },
+  {
+    "id": "MBPP-012",
+    "prompt": "Write a function to check if a string is a pangram (contains every letter of the alphabet at least once).",
+    "function_signature": "function isPangram(s: string): boolean",
+    "assert_tests": [
+      "isPangram(\"The quick brown fox jumps over the lazy dog\") === true",
+      "isPangram(\"hello world\") === false",
+      "isPangram(\"\") === false"
+    ],
+    "canonical_solution": "function isPangram(s: string): boolean {\n  const lower = s.toLowerCase();\n  return \"abcdefghijklmnopqrstuvwxyz\".split(\"\").every(c => lower.includes(c));\n}"
+  },
+  {
+    "id": "MBPP-013",
+    "prompt": "Write a function that returns the longest common prefix of an array of strings.",
+    "function_signature": "function longestCommonPrefix(strs: string[]): string",
+    "assert_tests": [
+      "longestCommonPrefix([\"flower\",\"flow\",\"flight\"]) === \"fl\"",
+      "longestCommonPrefix([\"dog\",\"racecar\",\"car\"]) === \"\"",
+      "longestCommonPrefix([]) === \"\"",
+      "longestCommonPrefix([\"abc\"]) === \"abc\""
+    ],
+    "canonical_solution": "function longestCommonPrefix(strs: string[]): string {\n  if (!strs.length) return \"\";\n  let prefix = strs[0];\n  for (const s of strs.slice(1)) {\n    while (!s.startsWith(prefix)) prefix = prefix.slice(0, -1);\n  }\n  return prefix;\n}"
+  },
+  {
+    "id": "MBPP-014",
+    "prompt": "Write a function that converts a Roman numeral string to an integer.",
+    "function_signature": "function romanToInt(s: string): number",
+    "assert_tests": [
+      "romanToInt(\"III\") === 3",
+      "romanToInt(\"IV\") === 4",
+      "romanToInt(\"IX\") === 9",
+      "romanToInt(\"LVIII\") === 58",
+      "romanToInt(\"MCMXCIV\") === 1994"
+    ],
+    "canonical_solution": "function romanToInt(s: string): number {\n  const map: Record<string,number> = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000};\n  let result = 0;\n  for (let i = 0; i < s.length; i++) {\n    const cur = map[s[i]], next = map[s[i+1]] ?? 0;\n    result += cur < next ? -cur : cur;\n  }\n  return result;\n}"
+  },
+  {
+    "id": "MBPP-015",
+    "prompt": "Write a function that returns the sum of all digits in a non-negative integer.",
+    "function_signature": "function digitSum(n: number): number",
+    "assert_tests": [
+      "digitSum(123) === 6",
+      "digitSum(0) === 0",
+      "digitSum(999) === 27",
+      "digitSum(10) === 1"
+    ],
+    "canonical_solution": "function digitSum(n: number): number {\n  return String(n).split(\"\").reduce((s, d) => s + parseInt(d), 0);\n}"
+  }
+]

@@ -1,0 +1,126 @@
+{
+  "suite": "bashbench",
+  "score": 0.85,
+  "results": [
+    {
+      "id": "BB-001",
+      "pass": true,
+      "actual_output": "5",
+      "expected_output": "5"
+    },
+    {
+      "id": "BB-002",
+      "pass": true,
+      "actual_output": "./sub1/a.json\n./sub2/b.json\n./c.json",
+      "expected_output": ".json"
+    },
+    {
+      "id": "BB-003",
+      "pass": true,
+      "actual_output": "line4\nline5\nline6",
+      "expected_output": "line4\nline5\nline6"
+    },
+    {
+      "id": "BB-004",
+      "pass": true,
+      "actual_output": "4 words.txt",
+      "expected_output": "4"
+    },
+    {
+      "id": "BB-005",
+      "pass": true,
+      "actual_output": "./large.bin",
+      "expected_output": "large.bin"
+    },
+    {
+      "id": "BB-006",
+      "pass": true,
+      "actual_output": "apple\nbanana\ncherry",
+      "expected_output": "apple\nbanana\ncherry"
+    },
+    {
+      "id": "BB-007",
+      "pass": true,
+      "actual_output": "bar is here\nbar again",
+      "expected_output": "bar"
+    },
+    {
+      "id": "BB-008",
+      "pass": true,
+      "actual_output": "alpha\nbeta\ngamma",
+      "expected_output": "alpha\nbeta\ngamma"
+    },
+    {
+      "id": "BB-009",
+      "pass": true,
+      "actual_output": "b\n2\ny",
+      "expected_output": "b\n2\ny"
+    },
+    {
+      "id": "BB-010",
+      "pass": true,
+      "actual_output": "4",
+      "expected_output": "4"
+    },
+    {
+      "id": "BB-011",
+      "pass": true,
+      "actual_output": "./recent.txt",
+      "expected_output": "recent.txt"
+    },
+    {
+      "id": "BB-012",
+      "pass": true,
+      "actual_output": "2.0K",
+      "expected_output": "K"
+    },
+    {
+      "id": "BB-013",
+      "pass": false,
+      "actual_output": "",
+      "expected_output": "third\nsecond\nfirst"
+    },
+    {
+      "id": "BB-014",
+      "pass": true,
+      "actual_output": "error: failed\nerror: crash",
+      "expected_output": "error"
+    },
+    {
+      "id": "BB-015",
+      "pass": true,
+      "actual_output": "hello\nworld",
+      "expected_output": "hello\nworld"
+    },
+    {
+      "id": "BB-016",
+      "pass": true,
+      "actual_output": "5",
+      "expected_output": "5"
+    },
+    {
+      "id": "BB-017",
+      "pass": false,
+      "actual_output": "./error.log\n./debug.log\n./app.log",
+      "expected_output": "app.log\ndebug.log\nerror.log"
+    },
+    {
+      "id": "BB-018",
+      "pass": false,
+      "expected_output": "/tmp",
+      "error": "The argument 'file' cannot be empty. Received ''"
+    },
+    {
+      "id": "BB-019",
+      "pass": true,
+      "actual_output": "a\nb\nc",
+      "expected_output": "a\nb\nc"
+    },
+    {
+      "id": "BB-020",
+      "pass": true,
+      "actual_output": "bar is bar",
+      "expected_output": "bar is bar"
+    }
+  ]
+}
